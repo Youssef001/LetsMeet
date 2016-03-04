@@ -15,9 +15,14 @@ public class Position {
     private Integer id_;
     private double longitude_;
     private double latitude_;
+    private double radius_;
     private Adresse adresse_;
     private Date date_;
 
+    public Position()
+    {
+
+    }
     public Position(int id,double lng, double lat)
     {
         id_=id;
@@ -30,7 +35,7 @@ public class Position {
         return id_;
     }
 
-    public void setId_(Integer id) {
+    public void setId(Integer id) {
         this.id_ = id;
     }
 
@@ -72,5 +77,13 @@ public class Position {
     {
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:s");
         return  df.format(date_);
+    }
+
+    public double getRadius() {
+        return radius_;
+    }
+
+    public void setRadius(double radius) {
+        this.radius_ = radius;
     }
 }

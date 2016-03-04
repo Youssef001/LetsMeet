@@ -5,10 +5,11 @@ package zemmahi.youssef.letsmeet;
  */
 public class Utilisateur {
     private Integer id_=0;
-    private String courriel_=null;
+    private String courriel_=new String();
     private boolean isPlanner_=false;
     private Position position_=null;
     private Preference[] userPreferences_=new Preference[3];
+    private String photoEn64_ = new String();
 
    public Utilisateur()
    {
@@ -95,5 +96,13 @@ public class Utilisateur {
         userPreferences_[y].setPriority(temp);
 
         return true;
+    }
+
+    public String getPhotoEn64() {
+        return photoEn64_;
+    }
+
+    public void setPhotoEn64(String photoEn64) {
+        this.photoEn64_ = photoEn64;
     }
 }

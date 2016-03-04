@@ -16,7 +16,6 @@ public class Groupe {
     public Groupe(String nom)
     {
         name_=nom;
-        id_= nom.hashCode();
     }
 
     public String getGroupName()
@@ -34,9 +33,9 @@ public class Groupe {
     {
         return id_;
     }
-    /* au cas ou l'on decide de creer differement l'id
+
     public void setId(int id)
     {
         id_=id;
-    }*/
+    }
 }
