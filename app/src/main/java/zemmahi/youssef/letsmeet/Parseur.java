@@ -21,7 +21,15 @@ public final class Parseur {
             user.setId(json.getJSONObject(i).getInt("idutilisateur"));
             user.setCourriel(json.getJSONObject(i).getString("courriel"));
             user.setPhotoEn64(json.getJSONObject(i).getString("photo"));
-            user.setIsPlanner(json.getJSONObject(i).getBoolean("organisateur"));
+            if(json.getJSONObject(i).getString("organisateur").contentEquals("1"))
+            {
+                user.setIsPlanner(true);
+            }
+            else
+            {
+                user.setIsPlanner(false);
+            }
+
             userLists.add(user);
         }
     return userLists;

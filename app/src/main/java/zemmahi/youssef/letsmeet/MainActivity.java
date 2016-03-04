@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONException;
+
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,12 +48,15 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         Log.d("mytest","c mon test a moi");
                         DBConnexion con=new DBConnexion();
-                        try {
-                            con.getRequest("http://najibarbaoui.com/najib");
+                        try{
+                            List<Utilisateur> userList = Parseur.ParseToUsersList(con.getRequest("http://najibarbaoui.com/najib"));
+                            userList.size();
                         } catch (IOException e) {
                             e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                            }
+                    }
 
                 }).start();
 
