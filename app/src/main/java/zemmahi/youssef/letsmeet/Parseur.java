@@ -67,7 +67,7 @@ public final class Parseur {
         }
         return groupeLists;
     }
-    public static List<Preference> parseToPreferencesList(String message) throws JSONException {
+    public static List<Preference> ParseToPreferencesList(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         List<Preference> PreferencesLists= new ArrayList<Preference>();
         for(int i=0;i<json.length();i++)
