@@ -22,42 +22,22 @@ public class DBContent {
     {
 
     }
-
+    // initial synchronisation when we start the application
     public void SynchronizeLocalFromRemoteContent()
     {
-        Thread thread1=SynchronizeLocalUsersFromRemoteContent();
-        try {
-            thread1.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Thread thread2=SynchronizeLocalGroupsFromRemoteContent();
-        try {
-            thread2.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Thread thread3 =SynchronizeLocalPreferencesFromRemoteContent();
-        try {
-            thread3.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Thread thread4=SynchronizeLocalPositionsFromRemoteContent();
-        try {
-            thread4.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        
+        SynchronizeLocalUsersFromRemoteContent();
+        SynchronizeLocalGroupsFromRemoteContent();
+        SynchronizeLocalPreferencesFromRemoteContent();
+        SynchronizeLocalPositionsFromRemoteContent();
     }
 
-    public  Thread SynchronizeLocalUsersFromRemoteContent()
+
+
+    public  void SynchronizeLocalUsersFromRemoteContent()
     {
         Thread UsersThread = new Thread(new Runnable() {
             public void run() {
-                Log.d("mytest", "c mon test a moi");
+                Log.d("Users test", "c mon test a moi");
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
@@ -71,13 +51,17 @@ public class DBContent {
 
         });
         UsersThread.start();
-        return UsersThread;
+        try {
+            UsersThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
-    public  Thread SynchronizeLocalGroupsFromRemoteContent()
+    public  void SynchronizeLocalGroupsFromRemoteContent()
     {
         Thread GroupsThread = new Thread(new Runnable() {
             public void run() {
-                Log.d("mytest", "c mon test a moi");
+                Log.d("Groups test", "c mon test a moi");
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
@@ -91,13 +75,17 @@ public class DBContent {
 
         });
         GroupsThread.start();
-        return GroupsThread;
+        try {
+            GroupsThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
-    public Thread SynchronizeLocalPreferencesFromRemoteContent()
+    public void SynchronizeLocalPreferencesFromRemoteContent()
     {
         Thread PreferencesThread = new Thread(new Runnable() {
             public void run() {
-                Log.d("mytest", "c mon test a moi");
+                Log.d("Preferences test ", "c mon test a moi");
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
@@ -111,14 +99,18 @@ public class DBContent {
 
         });
         PreferencesThread.start();
-        return PreferencesThread;
+        try {
+            PreferencesThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public  Thread SynchronizeLocalPositionsFromRemoteContent()
+    public  void SynchronizeLocalPositionsFromRemoteContent()
     {
         Thread PositionsThread= new Thread(new Runnable() {
             public void run() {
-                Log.d("mytest", "c mon test a moi");
+                Log.d("Positions test", "c mon test a moi");
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
@@ -132,7 +124,11 @@ public class DBContent {
 
         });
         PositionsThread.start();
-        return PositionsThread;
+        try {
+            PositionsThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
