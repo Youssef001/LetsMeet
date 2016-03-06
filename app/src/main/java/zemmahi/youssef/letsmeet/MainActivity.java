@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
 
-                new Thread(new Runnable() {
+                Thread t=new Thread(new Runnable() {
                     public void run() {
                         Log.d("mytest","c mon test a moi");
                         DBConnexion con=new DBConnexion();
@@ -59,8 +59,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                }).start();
+                });
+                t.start();
 
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         });
