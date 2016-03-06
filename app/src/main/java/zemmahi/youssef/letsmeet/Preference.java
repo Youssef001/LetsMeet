@@ -7,6 +7,7 @@ public class Preference {
     private String id_=new String();
     private String idLocarion_=new String();
     private String priority_=Constants.DefaultPriority;
+    private String userId_=new String();
 
     public Preference()
     {
@@ -61,5 +62,13 @@ public class Preference {
 
     public void setId(String id) {
         this.id_ = id;
+    }
+
+    public String getUserId() {
+        return userId_;
+    }
+
+    public void setUserId(String userId) {
+        this.userId_ = userId;
     }
 }

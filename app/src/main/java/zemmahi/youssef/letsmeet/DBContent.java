@@ -16,10 +16,10 @@ import java.util.Map;
  */
 public class DBContent {
 
-    Map<String,Utilisateur> userList_ = new HashMap<String,Utilisateur>();
-    Map<String,Preference> preferencesList_ = new HashMap<String,Preference>();
-    Map<String,Groupe> groupsList_ = new HashMap<String,Groupe>();
-    Map<String,Position> positionsList_ = new HashMap<String,Position>();
+    Map<String,Utilisateur> userMap_ = new HashMap<String,Utilisateur>();
+    Map<String,Preference> preferencesMap_ = new HashMap<String,Preference>();
+    Map<String,Groupe> groupsMap_ = new HashMap<String,Groupe>();
+    Map<String,Position> positionsMap_ = new HashMap<String,Position>();
 
     public DBContent ()
     {
@@ -36,6 +36,33 @@ public class DBContent {
     }
     private void InitialSortOfElements()
     {
+        for (Map.Entry<String, Preference> preference : preferencesMap_.entrySet())
+        {
+            if(userMap_.containsKey(preference.getValue().getUserId()))
+            {
+                userMap_.get(preference.getValue().getUserId()).addPreferences(preference.getValue());
+            }
+            else
+            {
+                Log.d("problem in initial sort","user not found");
+            }
+        }
+
+        for (Map.Entry<String, Utilisateur> user : userMap_.entrySet())
+        {
+            if(positionsMap_.containsKey(user.getValue().getPositionId()))
+            {
+                user.getValue().setPosition(positionsMap_.get(user.getValue().getPositionId()));
+            }
+            else
+            {
+                Log.d("problem in initial sort","Position not found in the map");
+            }
+            if(groupsMap_.containsKey(user.getValue().getGroupeId()))
+            {
+                groupsMap_.get(user.getValue().getGroupeId()).addUser(user.getValue());
+            }
+        }
 
     }
 
@@ -48,7 +75,7 @@ public class DBContent {
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
-                    userList_ = Parseur.ParseToUsersList(con.getRequest("http://najibarbaoui.com/najib"));
+                    userMap_ = Parseur.ParseToUsersMap(con.getRequest("http://najibarbaoui.com/najib"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -72,7 +99,7 @@ public class DBContent {
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
-                    groupsList_ = Parseur.ParseToGroupeList(con.getRequest("http://najibarbaoui.com/najib"));
+                    groupsMap_ = Parseur.ParseToGroupeMap(con.getRequest("http://najibarbaoui.com/najib"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -96,7 +123,7 @@ public class DBContent {
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
-                    preferencesList_ = Parseur.ParseToPreferencesList(con.getRequest("http://najibarbaoui.com/najib"));
+                    preferencesMap_ = Parseur.ParseToPreferencesMap(con.getRequest("http://najibarbaoui.com/najib"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -121,7 +148,7 @@ public class DBContent {
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
-                    positionsList_ = Parseur.ParseToPositionsList(con.getRequest("http://najibarbaoui.com/najib"));
+                    positionsMap_ = Parseur.ParseToPositionsMap(con.getRequest("http://najibarbaoui.com/najib"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

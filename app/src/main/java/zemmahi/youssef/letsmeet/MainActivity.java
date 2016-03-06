@@ -13,6 +13,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("mytest","c mon test a moi");
                         DBConnexion con=new DBConnexion();
                         try{
-                            List<Utilisateur> userList = Parseur.ParseToUsersList(con.getRequest("http://najibarbaoui.com/najib"));
+                            Map<String,Utilisateur> userList = Parseur.ParseToUsersMap(con.getRequest("http://najibarbaoui.com/najib"));
                             userList.size();
                         } catch (IOException e) {
                             e.printStackTrace();

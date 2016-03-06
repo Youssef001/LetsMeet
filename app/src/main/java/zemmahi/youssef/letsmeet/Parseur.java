@@ -10,9 +10,10 @@ import java.util.Map;
 /**
  * Created by youssef on 04/03/2016.
  */
+
 public final class Parseur {
 
-    public static Map<String,Utilisateur> ParseToUsersList(String message) throws JSONException {
+    public static Map<String,Utilisateur> ParseToUsersMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         Map<String,Utilisateur> usersMap= new HashMap<String,Utilisateur>();
         for(int i=0;i<json.length();i++)
@@ -23,7 +24,7 @@ public final class Parseur {
             user.setPhotoEn64(json.getJSONObject(i).getString("photo"));
             user.setGroupeId(json.getJSONObject(i).getString("groupe_idgroupe"));
             user.setPositionId(json.getJSONObject(i).getString("position_idposition"));
-            user.setPositionId(json.getJSONObject(i).getString("password"));
+            user.setPassword(json.getJSONObject(i).getString("password"));
             if(json.getJSONObject(i).getString("organisateur").contentEquals("1"))
             {
                 user.setIsPlanner(true);
@@ -38,7 +39,7 @@ public final class Parseur {
     return usersMap;
     }
 
-    public static Map<String,Position> ParseToPositionsList(String message) throws JSONException {
+    public static Map<String,Position> ParseToPositionsMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         Map<String,Position> positionsMap= new HashMap<String,Position>();
         for(int i=0;i<json.length();i++)
@@ -54,7 +55,7 @@ public final class Parseur {
         }
         return positionsMap;
     }
-    public static Map<String,Groupe> ParseToGroupeList(String message) throws JSONException {
+    public static Map<String,Groupe> ParseToGroupeMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         Map<String,Groupe> groupesMap= new HashMap<String,Groupe>();
         for(int i=0;i<json.length();i++)
@@ -66,7 +67,7 @@ public final class Parseur {
         }
         return groupesMap;
     }
-    public static Map<String,Preference> ParseToPreferencesList(String message) throws JSONException {
+    public static Map<String,Preference> ParseToPreferencesMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         Map<String,Preference> PreferencesMap= new HashMap<String,Preference>();
         for(int i=0;i<json.length();i++)
