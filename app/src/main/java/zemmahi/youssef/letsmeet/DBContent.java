@@ -1,22 +1,25 @@
 package zemmahi.youssef.letsmeet;
 
+import android.util.ArrayMap;
 import android.util.Log;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by youssef on 05/03/2016.
  */
 public class DBContent {
 
-    List<Utilisateur> userList_ = new ArrayList<Utilisateur>();
-    List<Preference> preferencesList_ = new ArrayList<Preference>();
-    List<Groupe> groupsList_ = new ArrayList<Groupe>();
-    List<Position> positionsList_ = new ArrayList<Position>();
+    Map<String,Utilisateur> userList_ = new HashMap<String,Utilisateur>();
+    Map<String,Preference> preferencesList_ = new HashMap<String,Preference>();
+    Map<String,Groupe> groupsList_ = new HashMap<String,Groupe>();
+    Map<String,Position> positionsList_ = new HashMap<String,Position>();
 
     public DBContent ()
     {
@@ -29,8 +32,12 @@ public class DBContent {
         SynchronizeLocalGroupsFromRemoteContent();
         SynchronizeLocalPreferencesFromRemoteContent();
         SynchronizeLocalPositionsFromRemoteContent();
+        InitialSortOfElements();
     }
+    private void InitialSortOfElements()
+    {
 
+    }
 
 
     public  void SynchronizeLocalUsersFromRemoteContent()

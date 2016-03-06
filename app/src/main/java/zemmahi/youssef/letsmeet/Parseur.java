@@ -4,17 +4,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by youssef on 04/03/2016.
  */
 public final class Parseur {
 
-    public static List<Utilisateur> ParseToUsersList(String message) throws JSONException {
+    public static Map<String,Utilisateur> ParseToUsersList(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
-        List<Utilisateur> userLists= new ArrayList<Utilisateur>();
+        Map<String,Utilisateur> usersMap= new HashMap<String,Utilisateur>();
         for(int i=0;i<json.length();i++)
         {
             Utilisateur user= new Utilisateur();
@@ -33,15 +33,14 @@ public final class Parseur {
                 user.setIsPlanner(false);
             }
 
-            userLists.add(user);
+            usersMap.put(user.getId(), user);
         }
-    return userLists;
-
+    return usersMap;
     }
 
-    public static List<Position> ParseToPositionsList(String message) throws JSONException {
+    public static Map<String,Position> ParseToPositionsList(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
-        List<Position> positionLists= new ArrayList<Position>();
+        Map<String,Position> positionsMap= new HashMap<String,Position>();
         for(int i=0;i<json.length();i++)
         {
             Position position= new Position();
@@ -51,25 +50,25 @@ public final class Parseur {
             // TODO
             //position.setRadius(json.getJSONObject(i).getDouble("radius"));
             position.setDate(json.getJSONObject(i).getString("position_time"));
-            positionLists.add(position);
+            positionsMap.put(position.getId(), position);
         }
-        return positionLists;
+        return positionsMap;
     }
-    public static List<Groupe> ParseToGroupeList(String message) throws JSONException {
+    public static Map<String,Groupe> ParseToGroupeList(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
-        List<Groupe> groupeLists= new ArrayList<Groupe>();
+        Map<String,Groupe> groupesMap= new HashMap<String,Groupe>();
         for(int i=0;i<json.length();i++)
         {
             Groupe groupe= new Groupe();
             groupe.setId(json.getJSONObject(i).getString("idgroupe"));
             groupe.setGrouoName(json.getJSONObject(i).getString("nom"));
-            groupeLists.add(groupe);
+            groupesMap.put(groupe.getId(), groupe);
         }
-        return groupeLists;
+        return groupesMap;
     }
-    public static List<Preference> ParseToPreferencesList(String message) throws JSONException {
+    public static Map<String,Preference> ParseToPreferencesList(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
-        List<Preference> PreferencesLists= new ArrayList<Preference>();
+        Map<String,Preference> PreferencesMap= new HashMap<String,Preference>();
         for(int i=0;i<json.length();i++)
         {
             Preference preference= new Preference();
@@ -90,8 +89,8 @@ public final class Parseur {
                 default:
                     preference.setPriority(Constants.DefaultPriority);
             }
-            PreferencesLists.add(preference);
+            PreferencesMap.put(preference.getId(), preference);
         }
-        return PreferencesLists;
+        return PreferencesMap;
     }
 }
