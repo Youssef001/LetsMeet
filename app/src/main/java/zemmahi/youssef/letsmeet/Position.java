@@ -1,5 +1,6 @@
 package zemmahi.youssef.letsmeet;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.text.DateFormat;
 // exemple d'information recupere pour une position formet json : https://developers.google.com/maps/documentation/geocoding/intro?hl=fr
 public class Position {
 
-    private Integer id_;
+    private String id_=new String();
     private double longitude_;
     private double latitude_;
     private double radius_;
@@ -23,7 +24,7 @@ public class Position {
     {
 
     }
-    public Position(int id,double lng, double lat)
+    public Position(String id,double lng, double lat)
     {
         id_=id;
         longitude_=lng;
@@ -31,11 +32,11 @@ public class Position {
         date_= Calendar.getInstance().getTime();;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id_;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id_ = id;
     }
 
@@ -72,10 +73,18 @@ public class Position {
     {
         date_= Calendar.getInstance().getTime();
     }
-
+    public void setDate(String date)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
+        try {
+            date_=sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
     public String getDateString()
     {
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:s");
+        DateFormat df = new SimpleDateFormat("yyyy-M-dd hh:mm:ss");
         return  df.format(date_);
     }
 

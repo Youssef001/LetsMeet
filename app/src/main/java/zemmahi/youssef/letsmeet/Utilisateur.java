@@ -4,12 +4,16 @@ package zemmahi.youssef.letsmeet;
  * Created by youssef on 24/02/2016.
  */
 public class Utilisateur {
-    private Integer id_=0;
+    private String id_= new String();
     private String courriel_=new String();
     private boolean isPlanner_=false;
     private Position position_=null;
     private Preference[] userPreferences_=new Preference[3];
     private String photoEn64_ = new String();
+    private String positionId_=new String();
+    private String groupeId_=new String();
+    private String password_=new String();
+
 
    public Utilisateur()
    {
@@ -19,7 +23,7 @@ public class Utilisateur {
        }
    }
 
-    public Utilisateur(int id, String courriel, boolean isPlanner)
+    public Utilisateur(String id, String courriel, boolean isPlanner)
     {
         id_=id;
         courriel_=courriel;
@@ -30,11 +34,11 @@ public class Utilisateur {
         }
     }
 
-    public Integer getId() {
+    public String getId() {
         return id_;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id_ = id;
     }
 
@@ -104,5 +108,29 @@ public class Utilisateur {
 
     public void setPhotoEn64(String photoEn64) {
         this.photoEn64_ = photoEn64;
+    }
+
+    public String getPositionId() {
+        return positionId_;
+    }
+
+    public void setPositionId(String positionId) {
+        this.positionId_ = positionId;
+    }
+
+    public String getGroupeId() {
+        return groupeId_;
+    }
+
+    public void setGroupeId(String groupeId) {
+        this.groupeId_ = groupeId;
+    }
+
+    public String getPassword() {
+        return password_;
+    }
+
+    public void setPassword(String password) {
+        this.password_ = password;
     }
 }

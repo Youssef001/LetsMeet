@@ -4,7 +4,7 @@ package zemmahi.youssef.letsmeet;
  * Created by youssef on 24/02/2016.
  */
 public class Groupe {
-    private Integer id_=0;
+    private String id_=new String();
     private String name_=null;
 
     public Groupe()
@@ -26,15 +26,14 @@ public class Groupe {
     public void setGrouoName(String name)
     {
         name_=name;
-        id_= name.hashCode();
     }
 
-    public Integer getId()
+    public String getId()
     {
         return id_;
     }
 
-    public void setId(int id)
+    public void setId(String id)
     {
         id_=id;
     }

@@ -4,24 +4,29 @@ package zemmahi.youssef.letsmeet;
  * Created by youssef on 24/02/2016.
  */
 public class Preference {
-    private Integer idLocarion_;
+    private String id_=new String();
+    private String idLocarion_=new String();
     private String priority_=Constants.DefaultPriority;
 
-    public Preference(int id, Position position)
+    public Preference()
+    {
+
+    }
+    public Preference(String id, Position position)
     {
         idLocarion_=id;
     }
-    public Preference(Integer id,String priority)
+    public Preference(String id,String priority)
     {
         idLocarion_=id;
         priority_=priority;
     }
 
-    public Integer getId() {
+    public String getIdLocarion() {
         return idLocarion_;
     }
 
-    public void setId(Integer id) {
+    public void setIdLocation(String id) {
         this.idLocarion_ = id;
     }
 
@@ -48,5 +53,13 @@ public class Preference {
     public void setToDefaultPriority()
     {
         priority_=Constants.DefaultPriority;
+    }
+
+    public String getId() {
+        return id_;
+    }
+
+    public void setId(String id) {
+        this.id_ = id;
     }
 }
