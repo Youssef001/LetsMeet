@@ -1,5 +1,7 @@
 package zemmahi.youssef.letsmeet;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by youssef on 24/02/2016.
  */
@@ -15,7 +17,7 @@ public class Utilisateur {
     private String password_=new String();
 
 
-   public Utilisateur()
+    public Utilisateur()
    {
        for (int i=0;i<3;i++)
        {
@@ -25,6 +27,7 @@ public class Utilisateur {
 
     public Utilisateur(String id, String courriel, boolean isPlanner)
     {
+        fName = name;
         id_=id;
         courriel_=courriel;
         isPlanner_=isPlanner;
@@ -32,6 +35,44 @@ public class Utilisateur {
         {
             userPreferences_[i]=null;
         }
+    }
+    public void setName(String name){
+        this.fName = name;
+    }
+    public String getName() {
+        return fName;
+    }
+    public Bitmap getThumb(){
+        return fThumb;
+    }
+    public void setThump(Bitmap thump){
+        this.fThumb = thump;
+    }
+    public Boolean getCheckedBox() {
+        return fCheckedBox;
+    }
+
+    public void setCheckedBox(Boolean checkedBox) {
+        this.fCheckedBox = checkedBox;
+    }
+    public void setName(String name){
+        this.fName = name;
+    }
+    public String getName() {
+        return fName;
+    }
+    public Bitmap getThumb(){
+        return fThumb;
+    }
+    public void setThump(Bitmap thump){
+        this.fThumb = thump;
+    }
+    public Boolean getCheckedBox() {
+        return fCheckedBox;
+    }
+
+    public void setCheckedBox(Boolean checkedBox) {
+        this.fCheckedBox = checkedBox;
     }
 
     public String getId() {
