@@ -157,4 +157,18 @@ public class Utilisateur {
     public void setPassword(String password) {
         this.password_ = password;
     }
+
+    public boolean IsUserNameValide(){
+        /* TO DO */
+        // Vérifier si le user name est valide
+
+        return false;
+    }
+    public boolean IsPasswordValide(){
+        /* TO DO */
+        // Vérifier si le user name est valide
+
+        return false;
+    }
+
 }

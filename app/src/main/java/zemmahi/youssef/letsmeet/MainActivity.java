@@ -77,9 +77,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-
-
-
         mBtnSignIn = (Button) findViewById(R.id.btnSignInMMenu);
         mBtnSignUP = (Button) findViewById(R.id.btnSignUpMMenu);
         mBtnQuit = (Button) findViewById(R.id.btnQuit);
@@ -179,12 +176,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
     private void populateAutoComplete() {
@@ -351,75 +346,83 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            // Creating service handler class instance
-            WebRequest webreqGet = new WebRequest();
+            // Créer un nouveau utilisateur pour valider sign in
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setName(fUsername);
+            utilisateur.setPassword(fPassword);
+            /* Ici on vérifie la validité des informations entrées */
+            fUserCheckedSuccessful = utilisateur.IsUserNameValide();
+            fPassCheckedSuccessful = utilisateur.IsPasswordValide();
 
-            // Making a request to url and getting response
-            repServer = webreqGet.makeWebServiceCall(url, WebRequest.POST, obj.toString());
-
-            clientData = ParseJSON(repServer);
-
-            //Log.d("Response: ", "> " + repServer);
+//            // Creating service handler class instance
+//            WebRequest webreqGet = new WebRequest();
+//
+//            // Making a request to url and getting response
+//            repServer = webreqGet.makeWebServiceCall(url, WebRequest.POST, obj.toString());
+//
+//            clientData = ParseJSON(repServer);
+//
+//            //Log.d("Response: ", "> " + repServer);
 
             return null;
         }
     }
 
-    /**
-     * Fonction pour parser le JSON
-     * @param json
-     * @return
-     */
-    private ArrayList<HashMap<String, String>> ParseJSON(String json) {
-        if (json != null) {
-            try {
-
-                // Hashmap for ListView
-                ArrayList<HashMap<String, String>> userDataList = new ArrayList<HashMap<String, String>>();
-
-                JSONArray jsonObj = new JSONArray(json);
-
-                // tmp hashmap for single entete item
-                HashMap<String, String> hashMode = new HashMap<String, String>();
-
-                // Retrieve the retruned data
-                JSONObject row = new JSONObject(jsonObj.get(0).toString());
-                fPasswordRep = row.getString(TAG_PASSWORD);
-                fUsernameRep = row.getString("email");   /******* change email with TAG_USERNAME after *********************************************************************/
-                String idRep = row.getString(TAG_ID);
-//                Toast.makeText(getApplicationContext(),
-//                        "Utilisateur recived : " + fEmailRep + "Password recived : " + fPasswordRep,
-//                        Toast.LENGTH_LONG).show();
-                if(fPasswordRep.matches(fPassword))
-                {
-                    hashMode.put(TAG_USERNAME, fUsernameRep);
-                    hashMode.put(TAG_PASSWORD, fPasswordRep);
-                    hashMode.put(TAG_ID, idRep);
-                    fPassCheckedSuccessful = true;
-                }
-                else
-                {
-                    hashMode.put(TAG_PASSWORD, fPasswordRep);
-                    Toast.makeText(getApplicationContext(),
-                            "Password is incorrect! I'm in ParseJson :)",
-                            Toast.LENGTH_LONG).show();
-                    fPassCheckedSuccessful = false;
-                }
-                if(fUsernameRep.matches(fUsername))
-                {
-                   fUserCheckedSuccessful = true;
-                }
-                // adding item to list
-                userDataList.add(hashMode);
-                return userDataList;
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            Log.e("ServiceHandler", "Password is not recived");
-            return null;
-        }
-    }
+//    /**
+//     * Fonction pour parser le JSON
+//     * @param json
+//     * @return
+//     */
+//    private ArrayList<HashMap<String, String>> ParseJSON(String json) {
+//        if (json != null) {
+//            try {
+//
+//                // Hashmap for ListView
+//                ArrayList<HashMap<String, String>> userDataList = new ArrayList<HashMap<String, String>>();
+//
+//                JSONArray jsonObj = new JSONArray(json);
+//
+//                // tmp hashmap for single entete item
+//                HashMap<String, String> hashMode = new HashMap<String, String>();
+//
+//                // Retrieve the retruned data
+//                JSONObject row = new JSONObject(jsonObj.get(0).toString());
+//                fPasswordRep = row.getString(TAG_PASSWORD);
+//                fUsernameRep = row.getString("email");   /******* change email with TAG_USERNAME after *********************************************************************/
+//                String idRep = row.getString(TAG_ID);
+////                Toast.makeText(getApplicationContext(),
+////                        "Utilisateur recived : " + fEmailRep + "Password recived : " + fPasswordRep,
+////                        Toast.LENGTH_LONG).show();
+//                if(fPasswordRep.matches(fPassword))
+//                {
+//                    hashMode.put(TAG_USERNAME, fUsernameRep);
+//                    hashMode.put(TAG_PASSWORD, fPasswordRep);
+//                    hashMode.put(TAG_ID, idRep);
+//                    fPassCheckedSuccessful = true;
+//                }
+//                else
+//                {
+//                    hashMode.put(TAG_PASSWORD, fPasswordRep);
+//                    Toast.makeText(getApplicationContext(),
+//                            "Password is incorrect! I'm in ParseJson :)",
+//                            Toast.LENGTH_LONG).show();
+//                    fPassCheckedSuccessful = false;
+//                }
+//                if(fUsernameRep.matches(fUsername))
+//                {
+//                   fUserCheckedSuccessful = true;
+//                }
+//                // adding item to list
+//                userDataList.add(hashMode);
+//                return userDataList;
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                return null;
+//            }
+//        } else {
+//            Log.e("ServiceHandler", "Password is not recived");
+//            return null;
+//        }
+//    }
 }
