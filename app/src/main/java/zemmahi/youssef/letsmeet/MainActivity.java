@@ -422,38 +422,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return null;
         }
     }
-    /****************************************************************/
-                if(fPasswordRep.matches(fPassword))
-                {
-                    hashMode.put(TAG_USERNAME, fUsernameRep);
-                    hashMode.put(TAG_PASSWORD, fPasswordRep);
-                    hashMode.put(TAG_ID, idRep);
-                    fPassCheckedSuccessful = true;
-                }
-                else
-                {
-                    hashMode.put(TAG_PASSWORD, fPasswordRep);
-                    Toast.makeText(getApplicationContext(),
-                            "Password is incorrect! I'm in ParseJson :)",
-                            Toast.LENGTH_LONG).show();
-                    fPassCheckedSuccessful = false;
-                }
-                if(fUsernameRep.matches(fUsername))
-                {
-                   fUserCheckedSuccessful = true;
-                }
-                // adding item to list
-                userDataList.add(hashMode);
-                return userDataList;
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            Log.e("ServiceHandler", "Password is not recived");
-            return null;
-        }
-    }
-    /****************************************************************/
 }

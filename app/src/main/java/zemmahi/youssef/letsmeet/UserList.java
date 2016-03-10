@@ -77,27 +77,27 @@ public class UserList extends FragmentActivity implements OnMapReadyCallback, Go
         Position user4Position = new Position();
         Position user5Position = new Position();
         Position user6Position = new Position();
-        Utilisateur utilisateur1 = new Utilisateur("Mahdi Zolnouri", 11, "mahdi@polymtl.ca", false);
+        Utilisateur utilisateur1 = new Utilisateur("11", "Mahdi Zolnouri", "mahdi@polymtl.ca", false);
         user1Position.setLatitude(61);
         user1Position.setLongitude(120);
         utilisateur1.setPosition(user1Position);
-        Utilisateur utilisateur2 = new Utilisateur("Najib Arbaoui", 22, "najib@polymtl.ca", false);
+        Utilisateur utilisateur2 = new Utilisateur("22", "Najib Arbaoui", "najib@polymtl.ca", false);
         user2Position.setLatitude(-31);
         user2Position.setLongitude(31);
         utilisateur2.setPosition(user2Position);
-        Utilisateur utilisateur3 = new Utilisateur("Youssef Zemmahi", 33, "youssef@polymtl.ca", false);
+        Utilisateur utilisateur3 = new Utilisateur("33", "Youssef Zemmahi", "youssef@polymtl.ca", false);
         user3Position.setLatitude(41);
         user3Position.setLongitude(41);
         utilisateur3.setPosition(user3Position);
-        Utilisateur utilisateur4 = new Utilisateur("Samuel Gagnon", 11, "samuel@polymtl.ca", false);
+        Utilisateur utilisateur4 = new Utilisateur("11", "Samuel Gagnon", "samuel@polymtl.ca", false);
         user4Position.setLatitude(-41);
         user4Position.setLongitude(41);
         utilisateur4.setPosition(user4Position);
-        Utilisateur utilisateur5 = new Utilisateur("Julien Daoust", 22, "julien@polymtl.ca", false);
+        Utilisateur utilisateur5 = new Utilisateur("22", "Julien Daoust", "julien@polymtl.ca", false);
         user5Position.setLatitude(51);
         user5Position.setLongitude(51);
         utilisateur5.setPosition(user5Position);
-        Utilisateur utilisateur6 = new Utilisateur("Wassim Nasrallah", 33, "wassim@polymtl.ca", false);
+        Utilisateur utilisateur6 = new Utilisateur("33", "Wassim Nasrallah", "wassim@polymtl.ca", false);
         user6Position.setLatitude(61);
         user6Position.setLongitude(61);
         utilisateur6.setPosition(user6Position);
@@ -220,10 +220,10 @@ public class UserList extends FragmentActivity implements OnMapReadyCallback, Go
         Location location = LocationServices.FusedLocationApi.getLastLocation(fGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(fGoogleApiClient, fLocationRequest, (com.google.android.gms.location.LocationListener) this);
-        }
-        else {
+        } else {
             handleNewLocation(location);
-        };
+        }
+        ;
     }
 
     private void handleNewLocation(Location location) {

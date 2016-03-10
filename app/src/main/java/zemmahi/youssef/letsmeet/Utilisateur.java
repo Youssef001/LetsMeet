@@ -7,9 +7,12 @@ import android.graphics.Bitmap;
  */
 public class Utilisateur {
     private String id_= new String();
+    private String name_ = new String();
     private String courriel_=new String();
+    private Bitmap photo_;// = Bitmap.createBitmap(" ");
     private boolean isPlanner_=false;
     private Position position_=null;
+    private Boolean checkedBox_;
     private Preference[] userPreferences_=new Preference[3];
     private String photoEn64_ = new String();
     private String positionId_=new String();
@@ -25,9 +28,9 @@ public class Utilisateur {
        }
    }
 
-    public Utilisateur(String id, String courriel, boolean isPlanner)
+    public Utilisateur(String id, String name, String courriel, boolean isPlanner)
     {
-        fName = name;
+        name_ = name;
         id_=id;
         courriel_=courriel;
         isPlanner_=isPlanner;
@@ -37,44 +40,24 @@ public class Utilisateur {
         }
     }
     public void setName(String name){
-        this.fName = name;
+        this.name_ = name;
     }
     public String getName() {
-        return fName;
+        return name_;
     }
     public Bitmap getThumb(){
-        return fThumb;
+        return photo_;
     }
     public void setThump(Bitmap thump){
-        this.fThumb = thump;
+        this.photo_ = thump;
     }
     public Boolean getCheckedBox() {
-        return fCheckedBox;
+        return checkedBox_;
     }
 
     public void setCheckedBox(Boolean checkedBox) {
-        this.fCheckedBox = checkedBox;
+        this.checkedBox_ = checkedBox;
     }
-    public void setName(String name){
-        this.fName = name;
-    }
-    public String getName() {
-        return fName;
-    }
-    public Bitmap getThumb(){
-        return fThumb;
-    }
-    public void setThump(Bitmap thump){
-        this.fThumb = thump;
-    }
-    public Boolean getCheckedBox() {
-        return fCheckedBox;
-    }
-
-    public void setCheckedBox(Boolean checkedBox) {
-        this.fCheckedBox = checkedBox;
-    }
-
     public String getId() {
         return id_;
     }

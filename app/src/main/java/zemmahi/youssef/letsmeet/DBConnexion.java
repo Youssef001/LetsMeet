@@ -1,16 +1,13 @@
 package zemmahi.youssef.letsmeet;
 
+import android.app.DownloadManager;
 import android.util.Log;
 
-import org.json.JSONObject;
+import com.google.android.gms.appdatasearch.GetRecentContextCall;
 
 import java.io.IOException;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+
 
 /**
  * Created by youssef on 01/03/2016.
@@ -22,11 +19,11 @@ public class DBConnexion {
 
     public String getRequest(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
+        DownloadManager.Request request = new DownloadManager.Request.Builder()
                 .url(url)
                 .build();
 
-        Response response = client.newCall(request).execute();
+        GetRecentContextCall.Response response = client.newCall(request).execute();
         Log.d("response to get",response.toString());
         String temp=response.body().string();
         Log.d("body",temp);
