@@ -2,6 +2,7 @@ package zemmahi.youssef.letsmeet;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +46,8 @@ public class SignUp extends AppCompatActivity {
     private String repServer;
     private JSONObject obj;
     private static String url = "http://192.168.0.102/KWphp/Srvc_insert_new_user.php";
-    private String fUserName, fUserNameRep, fEmail, fEmailRep, fPassword, fPasswordRep, fConfirmPass, fConfirmPassRep;
+    private String fUserName, fEmail, fPassword, fConfirmPass;
+    private Bitmap fPhoto;
     private int checkJson = 0;
     private boolean fUserInsertSuccessful = false;
     private boolean fPassCaseEmpty = false, fEmailCaseEmpty = false, fEmailInvalide = false, fEmailNotFound = false;
@@ -233,24 +235,32 @@ public class SignUp extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            // Creating service handler class instance
-            WebRequest webreqGet = new WebRequest();
-
-            // Making a request to url and getting response
-            url = "http://192.168.0.102/KWphp/Srvc_insert_new_user.php";
-            url+="?username="+fUserName+"&email="+fEmail+"&password="+fPassword;
-            repServer = webreqGet.makeWebServiceCall(url, WebRequest.GET, obj.toString());
-
-            //http://192.168.0.102/KWphp/Srvc_insert_new_user.php?first_name=reza&last_name=zolnouri&email=reza@polymtl.ca&password=reza1
-            //http://192.168.0.102/KWphp/Srvc_insert_user.php?first_name=m&last_name=z&email=mz@yahoo.com &password=12345
-
-            if(repServer.matches("insert success"))
-            {
-                fUserInsertSuccessful = true;
-            }else
-                fUserInsertSuccessful = false;
-
-            //Log.d("Response: ", "> " + repServer);
+            // Créer un nouveau utilisateur pour valider sign in
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setName(fUserName);
+            utilisateur.setCourriel(fEmail);
+            utilisateur.setPassword(fPassword);
+            utilisateur.setPhotoEnBitmap(fPhoto);
+            /* Ici on enregistre l'utilisateur et on vérifie si l'opération est réussie */
+            fUserInsertSuccessful = utilisateur.InscrireNouveauUtilisateur();
+//            // Creating service handler class instance
+//            WebRequest webreqGet = new WebRequest();
+//
+//            // Making a request to url and getting response
+//            url = "http://192.168.0.102/KWphp/Srvc_insert_new_user.php";
+//            url+="?username="+fUserName+"&email="+fEmail+"&password="+fPassword;
+//            repServer = webreqGet.makeWebServiceCall(url, WebRequest.GET, obj.toString());
+//
+//            //http://192.168.0.102/KWphp/Srvc_insert_new_user.php?first_name=reza&last_name=zolnouri&email=reza@polymtl.ca&password=reza1
+//            //http://192.168.0.102/KWphp/Srvc_insert_user.php?first_name=m&last_name=z&email=mz@yahoo.com &password=12345
+//
+//            if(repServer.matches("insert success"))
+//            {
+//                fUserInsertSuccessful = true;
+//            }else
+//                fUserInsertSuccessful = false;
+//
+//            //Log.d("Response: ", "> " + repServer);
 
             return null;
         }

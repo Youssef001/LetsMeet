@@ -75,8 +75,8 @@ public class UserAdapter extends BaseAdapter {
         // Set image if exists
         try {
 
-            if (data.getThumb() != null) {
-                fV.imageView.setImageBitmap(data.getThumb());
+            if (data.getPhotoEnBitmap() != null) {
+                fV.imageView.setImageBitmap(data.getPhotoEnBitmap());
             } else {
                 fV.imageView.setImageResource(R.drawable.ic_photos);
             }
@@ -90,7 +90,7 @@ public class UserAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-        Log.e("Image Thumb", "--------------" + data.getThumb());
+        Log.e("Image Thumb", "--------------" + data.getPhotoEnBitmap());
 
         // Set check box listener android
         fV.check.setOnClickListener(new View.OnClickListener() {

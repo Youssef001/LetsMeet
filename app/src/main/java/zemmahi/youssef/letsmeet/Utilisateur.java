@@ -9,7 +9,8 @@ public class Utilisateur {
     private String id_= new String();
     private String name_ = new String();
     private String courriel_=new String();
-    private Bitmap photo_;// = Bitmap.createBitmap(" ");
+    private Bitmap photoEnBitMap_;// = Bitmap.createBitmap(" ");
+    private String photoEn64;
     private boolean isPlanner_=false;
     private Position position_=null;
     private Boolean checkedBox_;
@@ -45,11 +46,11 @@ public class Utilisateur {
     public String getName() {
         return name_;
     }
-    public Bitmap getThumb(){
-        return photo_;
+    public Bitmap getPhotoEnBitmap(){
+        return photoEnBitMap_;
     }
-    public void setThump(Bitmap thump){
-        this.photo_ = thump;
+    public void setPhotoEnBitmap(Bitmap photo){
+        this.photoEnBitMap_ = photo;
     }
     public Boolean getCheckedBox() {
         return checkedBox_;
@@ -167,6 +168,12 @@ public class Utilisateur {
     public boolean IsPasswordValide(){
         /* TO DO */
         // Vérifier si le user name est valide
+
+        return false;
+    }
+    public boolean InscrireNouveauUtilisateur(){
+        /* TO DO */
+        // Entregistrer l'utilisateur et retourner la validité de l'opération
 
         return false;
     }
