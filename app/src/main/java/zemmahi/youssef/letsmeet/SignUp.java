@@ -30,27 +30,17 @@ public class SignUp extends AppCompatActivity {
     private EditText mEdTxtEmail;
     private EditText mEdTxtPassword;
     private EditText mEdTxtComfirmPassword;
-
-    private View mProgressView;
-    private View mLoginFormView;
-
     private Button btnCreateAccount = null;
     private Button btnBackMainMenu = null;
 
-    double fCurrentLatitude = 0.0;
-    double fCurrentLongitude = 0.0;
+
     // Declare the fields
-    private ArrayList<HashMap<String, String>> clientData;
-    private static final String TAG_EMAIL = "email";
-    private static final String TAG_PASSWORD = "password";
-    private String repServer;
-    private JSONObject obj;
-    private static String url = "http://192.168.0.102/KWphp/Srvc_insert_new_user.php";
+    double fCurrentLatitude;
+    double fCurrentLongitude;
     private String fUserName, fEmail, fPassword, fConfirmPass;
     private Bitmap fPhoto;
-    private int checkJson = 0;
     private boolean fUserInsertSuccessful = false;
-    private boolean fPassCaseEmpty = false, fEmailCaseEmpty = false, fEmailInvalide = false, fEmailNotFound = false;
+    private boolean fPassCaseEmpty = false, fEmailCaseEmpty = false, fEmailInvalide = false;
     private boolean fConfirmPassCaseEmpty = false, fUserNameCaseEmpty = false, fPassNotConfirm = false, fPassInvalide = false;
 
 
@@ -65,21 +55,16 @@ public class SignUp extends AppCompatActivity {
         mEdTxtEmail = (EditText) findViewById(R.id.edtTxtEmailSU);
         mEdTxtPassword = (EditText) findViewById(R.id.edtTxtPasswordSU);
         mEdTxtComfirmPassword = (EditText) findViewById(R.id.edtTxtConfirmPasswordSU);
+        Bundle latitudeRecu = getIntent().getExtras();
+        fCurrentLatitude = latitudeRecu.getDouble("fCurrentLatitude");
+        Bundle longitudeRecu = getIntent().getExtras();
+        fCurrentLongitude = longitudeRecu.getDouble("fCurrentLongitude");
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (fCurrentLatitude == 0.0 || fCurrentLongitude == 0.0) {
-////                    Intent intent = new Intent(getApplicationContext(), FindLocation.class);
-////                    startActivity(intent);
-//                }
-//
-//                Toast.makeText(SignUp.this, "Longitude : " + fCurrentLongitude + "Latitude : " + fCurrentLatitude, Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(getApplicationContext(), UserList.class);
-//                startActivity(intent);
-//                finish();
+                Toast.makeText(SignUp.this, "Longitude : " + fCurrentLongitude + "Latitude : " + fCurrentLatitude, Toast.LENGTH_LONG).show();
                 attemptLogin();
-
             }
         });
         btnBackMainMenu.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +73,6 @@ public class SignUp extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
-
             }
         });
     }
@@ -96,7 +80,7 @@ public class SignUp extends AppCompatActivity {
     private void attemptLogin() {
         View focusView = null;
         boolean cancel = false;
-        fEmailCaseEmpty = fPassCaseEmpty = fEmailInvalide = fEmailNotFound= fPassInvalide =  fConfirmPassCaseEmpty = fPassNotConfirm = fUserNameCaseEmpty = false ;
+        fEmailCaseEmpty = fPassCaseEmpty = fPassInvalide = fEmailInvalide  =  fConfirmPassCaseEmpty = fPassNotConfirm = fUserNameCaseEmpty = false ;
 
         // Reset errors.
         mEdTxtUserName.setError(null);
@@ -161,34 +145,26 @@ public class SignUp extends AppCompatActivity {
         }
         if (!fPassCaseEmpty && !fPassInvalide && !fConfirmPassCaseEmpty && !fPassNotConfirm
                 && !fEmailCaseEmpty && !fEmailInvalide && !fUserNameCaseEmpty) {
-            // Creating service handler class instance
-            obj = new JSONObject();
-            try {
-                obj.put("username", fUserName);
-                obj.put("email", fEmail);
-                obj.put("password", fPassword);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             // Calling async task to get json
             try {
                 new ConnectionCode().execute().get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                e.printStackTrace();
+               e.printStackTrace();
             }
 
             if (fUserInsertSuccessful) {
-                Toast.makeText(getApplicationContext(),
-                        "Sign up successful!",
-                        Toast.LENGTH_LONG).show();
-                Intent i = new Intent(getBaseContext(), ChooseGroup.class);
-                Bundle emailBundle = new Bundle();
-                emailBundle.putString("mEmail", fEmail); // email
-                i.putExtras(emailBundle);
-                startActivity(i);
-                finish();
+                    Toast.makeText(getApplicationContext(),
+                            "Sign up successful!",
+                            Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getBaseContext(), ChooseGroup.class);
+                    Bundle emailBundle = new Bundle();
+                    emailBundle.putString("mEmail", fEmail); // email
+                    i.putExtras(emailBundle);
+                    startActivity(i);
+                    finish();
+
             }
             if (cancel) {
                 // There was an error; don't attempt login and focus the first
@@ -209,59 +185,28 @@ public class SignUp extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
     /****************************************************************/
     private class ConnectionCode extends AsyncTask<Void, Void, Void> {
-
-        // Hashmap for ListView
-        ProgressDialog pDialog;
-
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // Showing progress dialog
-            pDialog = new ProgressDialog(SignUp.this);
-            pDialog.setMessage("Processing ...");
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
+        protected Void doInBackground(Void... params) {
 
-        @Override
-        protected Void doInBackground(Void... arg0) {
             // Créer un nouveau utilisateur pour valider sign in
             Utilisateur utilisateur = new Utilisateur();
             utilisateur.setName(fUserName);
             utilisateur.setCourriel(fEmail);
             utilisateur.setPassword(fPassword);
             utilisateur.setPhotoEnBitmap(fPhoto);
+
             /* Ici on enregistre l'utilisateur et on vérifie si l'opération est réussie */
             fUserInsertSuccessful = utilisateur.InscrireNouveauUtilisateur();
-//            // Creating service handler class instance
-//            WebRequest webreqGet = new WebRequest();
-//
-//            // Making a request to url and getting response
-//            url = "http://192.168.0.102/KWphp/Srvc_insert_new_user.php";
-//            url+="?username="+fUserName+"&email="+fEmail+"&password="+fPassword;
-//            repServer = webreqGet.makeWebServiceCall(url, WebRequest.GET, obj.toString());
-//
-//            //http://192.168.0.102/KWphp/Srvc_insert_new_user.php?first_name=reza&last_name=zolnouri&email=reza@polymtl.ca&password=reza1
-//            //http://192.168.0.102/KWphp/Srvc_insert_user.php?first_name=m&last_name=z&email=mz@yahoo.com &password=12345
-//
-//            if(repServer.matches("insert success"))
-//            {
-//                fUserInsertSuccessful = true;
-//            }else
-//                fUserInsertSuccessful = false;
-//
-//            //Log.d("Response: ", "> " + repServer);
-
+            /* Hardcoder !*/
+            fUserInsertSuccessful = true;
             return null;
         }
     }

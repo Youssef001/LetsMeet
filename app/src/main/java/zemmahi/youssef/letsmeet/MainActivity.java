@@ -59,15 +59,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Button mBtnQuit = null;
 
     /* Declare the fiels */
-    private ArrayList<HashMap<String, String>> clientData;
-    private static final String TAG_USERNAME = "username";
-    private static final String TAG_PASSWORD = "password";
-    private static final String TAG_ID = "id";
-    private String repServer;
     private JSONObject obj;
-    private static String url = "http://192.168.0.102/KWphp/Conncetion.php";
-    private String fUsername, fUsernameRep, fPassword, fPasswordRep;
-    private int checkJson = 0;
+    private String fUsername, fPassword;
     private boolean fPassCheckedSuccessful = false;
     private boolean fUserCheckedSuccessful = false;
 
@@ -160,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBtnSignUP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUp.class);
+                Intent intent = new Intent(getApplicationContext(), FindLocation.class);
                 startActivity(intent);
                 finish();
 
@@ -276,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mACTxtVwUserName.setAdapter(adapter);
     }
 
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -301,8 +293,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             } catch (InterruptedException e) {
                 return false;
             }
-            /*********************************** Connection with database *************************************************/
-
 
             // TODO: register the new account here.
             return true;
@@ -327,22 +317,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //showProgress(false);
         }
     }
-    /****************************************************************/
-    /****************************************************************/
+
     private class ConnectionCode extends AsyncTask<Void, Void, Void> {
-
-        // Hashmap for ListView
-        ProgressDialog pDialog;
-
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            // Showing progress dialog
-//            pDialog = new ProgressDialog(MainActivity.this);
-//            pDialog.setMessage("Connect to database for checking the password ...");
-//            pDialog.setCancelable(false);
-//            pDialog.show();
-//        }
 
         @Override
         protected Void doInBackground(Void... arg0) {
@@ -354,75 +330,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             fUserCheckedSuccessful = utilisateur.IsUserNameValide();
             fPassCheckedSuccessful = utilisateur.IsPasswordValide();
 
-//            // Creating service handler class instance
-//            WebRequest webreqGet = new WebRequest();
-//
-//            // Making a request to url and getting response
-//            repServer = webreqGet.makeWebServiceCall(url, WebRequest.POST, obj.toString());
-//
-//            clientData = ParseJSON(repServer);
-//
-//            //Log.d("Response: ", "> " + repServer);
-
+            /* Hardcoder !*/
+            fUserCheckedSuccessful = true;
+            fPassCheckedSuccessful = true;
             return null;
         }
     }
 
-//    /**
-//     * Fonction pour parser le JSON
-//     * @param json
-//     * @return
-//     */
-//    private ArrayList<HashMap<String, String>> ParseJSON(String json) {
-//        if (json != null) {
-//            try {
-//
-//                // Hashmap for ListView
-//                ArrayList<HashMap<String, String>> userDataList = new ArrayList<HashMap<String, String>>();
-//
-//                JSONArray jsonObj = new JSONArray(json);
-//
-//                // tmp hashmap for single entete item
-//                HashMap<String, String> hashMode = new HashMap<String, String>();
-//
-//                // Retrieve the retruned data
-//                JSONObject row = new JSONObject(jsonObj.get(0).toString());
-//                fPasswordRep = row.getString(TAG_PASSWORD);
-//                fUsernameRep = row.getString("email");   /******* change email with TAG_USERNAME after *********************************************************************/
-//                String idRep = row.getString(TAG_ID);
-////                Toast.makeText(getApplicationContext(),
-////                        "Utilisateur recived : " + fEmailRep + "Password recived : " + fPasswordRep,
-////                        Toast.LENGTH_LONG).show();
-//                if(fPasswordRep.matches(fPassword))
-//                {
-//                    hashMode.put(TAG_USERNAME, fUsernameRep);
-//                    hashMode.put(TAG_PASSWORD, fPasswordRep);
-//                    hashMode.put(TAG_ID, idRep);
-//                    fPassCheckedSuccessful = true;
-//                }
-//                else
-//                {
-//                    hashMode.put(TAG_PASSWORD, fPasswordRep);
-//                    Toast.makeText(getApplicationContext(),
-//                            "Password is incorrect! I'm in ParseJson :)",
-//                            Toast.LENGTH_LONG).show();
-//                    fPassCheckedSuccessful = false;
-//                }
-//                if(fUsernameRep.matches(fUsername))
-//                {
-//                   fUserCheckedSuccessful = true;
-//                }
-//                // adding item to list
-//                userDataList.add(hashMode);
-//                return userDataList;
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//        } else {
-//            Log.e("ServiceHandler", "Password is not recived");
-//            return null;
-//        }
-//    }
 }

@@ -31,7 +31,7 @@ public class FindLocation extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        //setContentView(R.layout.activity_sign_up);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -52,9 +52,7 @@ public class FindLocation extends AppCompatActivity implements GoogleApiClient.C
         //setUpMapIfNeeded();
         mGoogleApiClient.connect();
     }
-//    private void setUpMap() {
-//        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-//    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -81,6 +79,10 @@ public class FindLocation extends AppCompatActivity implements GoogleApiClient.C
         if (location == null) {
             // Blank for a moment...
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            Toast.makeText(FindLocation.this, "Activer votre GPS ou Wi-Fi !", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
         }
         else {
             handleNewLocation(location);
