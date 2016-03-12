@@ -4,13 +4,17 @@ package zemmahi.youssef.letsmeet;
  * Created by youssef on 24/02/2016.
  */
 public class Adresse {
-    private Integer streetNumber_=null;
-    private String streetName_=null;
-    private String city_=null;
-    private String province_=null;
-    private String country_=null;
-    private String postalCode_=null;
+    private Integer streetNumber_=0;
+    private String streetName_=new String();
+    private String city_=new String();
+    private String province_=new String() ;
+    private String country_=new String();
+    private String postalCode_=new String();
 
+    public Adresse()
+    {
+
+    }
 
     public Adresse (Integer streetNum, String streetName, String city, String province, String country, String postalCode )
     {

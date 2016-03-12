@@ -38,6 +38,40 @@ public final class Parseur {
         }
     return usersMap;
     }
+    public static String ParseUserToJsonFormat(Utilisateur user) throws JSONException {
+        JSONObject userJson = new JSONObject();
+        JSONObject positionJson=new JSONObject();
+        JSONObject json=new JSONObject();
+        // create user
+        userJson.put("idutilisateur",user.getId());
+        userJson.put("courriel",user.getCourriel());
+        userJson.put("photo",user.getPhotoEn64());
+        if(user.isPlanner())
+        {
+            userJson.put("organisateur","1");
+        }
+        else
+        {
+            userJson.put("organisateur","0");
+        }
+
+        userJson.put("position_idposition",user.getPositionId());
+        userJson.put("groupe_idgroupe",user.getGroupeId());
+        userJson.put("password",user.getPassword());
+
+
+        // creation de la partie position
+        positionJson.put("idposition",user.getPositionId());
+        positionJson.put("latitude",user.getPosition().getLatitude());
+        positionJson.put("longitude",user.getPosition().getLongitude());
+        positionJson.put("position_time",user.getPosition().getDateString());
+
+        // JSON FINAL
+        json.put("position",positionJson.toString());
+        json.put("utilisateur",userJson.toString());
+        return json.toString();
+
+    }
 
     public static Map<String,Position> ParseToPositionsMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);

@@ -2,6 +2,8 @@ package zemmahi.youssef.letsmeet;
 
 import android.graphics.Bitmap;
 
+import java.util.UUID;
+
 /**
  * Created by youssef on 24/02/2016.
  */
@@ -10,27 +12,41 @@ public class Utilisateur {
     private String name_ = new String();
     private String courriel_=new String();
     private Bitmap photoEnBitMap_;// = Bitmap.createBitmap(" ");
-    private String photoEn64;
     private boolean isPlanner_=false;
-    private Position position_=null;
+    private Position position_=new Position();
     private Boolean checkedBox_;
     private Preference[] userPreferences_=new Preference[3];
     private String photoEn64_ = new String();
     private String positionId_=new String();
     private String groupeId_=new String();
     private String password_=new String();
-
+    UUID uidFormat_ = UUID.fromString("91c83b36-e25c-11e5-9730-9a79f06e9478");
 
     public Utilisateur()
    {
+       id_=uidFormat_.randomUUID().toString();
+       positionId_=uidFormat_.randomUUID().toString();
        for (int i=0;i<3;i++)
        {
            userPreferences_[i]=null;
        }
    }
-
+    public Utilisateur(String username,String courriel, String password, String groupid)
+    {
+        id_=uidFormat_.randomUUID().toString();
+        positionId_=uidFormat_.randomUUID().toString();
+        name_=username;
+        courriel_=courriel;
+        password_=password;
+        groupeId_=groupid;
+        for (int i=0;i<3;i++)
+        {
+            userPreferences_[i]=null;
+        }
+    }
     public Utilisateur(String id, String name, String courriel, boolean isPlanner)
     {
+        positionId_=uidFormat_.randomUUID().toString();
         name_ = name;
         id_=id;
         courriel_=courriel;

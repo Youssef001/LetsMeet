@@ -14,22 +14,22 @@ import java.text.DateFormat;
 public class Position {
 
     private String id_=new String();
-    private double longitude_;
-    private double latitude_;
-    private double radius_;
-    private Adresse adresse_;
+    private double longitude_=0.0;
+    private double latitude_=0.0;
+    private double radius_=0.0;
+    private Adresse adresse_ = new Adresse();
     private Date date_;
 
     public Position()
     {
-
+        date_= Calendar.getInstance().getTime();
     }
     public Position(String id,double lng, double lat)
     {
         id_=id;
         longitude_=lng;
         latitude_=lat;
-        date_= Calendar.getInstance().getTime();;
+        date_= Calendar.getInstance().getTime();
     }
 
     public String getId() {

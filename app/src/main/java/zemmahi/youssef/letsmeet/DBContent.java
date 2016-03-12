@@ -22,6 +22,7 @@ public class DBContent {
     private Map<String,Groupe> groupsMap_ = new HashMap<String,Groupe>();
     private Map<String,Position> positionsMap_ = new HashMap<String,Position>();
     private String actualGroupId_= new String();
+    private String actualUserId_=new String();
 
     // instance du singleton
     private static DBContent instance_ = null;
@@ -38,6 +39,10 @@ public class DBContent {
             instance_ = new DBContent();
         }
         return instance_;
+    }
+    public static void destroyInstance()
+    {
+        instance_=null;
     }
 
     private void InitialSyncOfElements()
@@ -96,6 +101,26 @@ public class DBContent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean CreerNouvelUtilisateur(String UserName, String email, String password)
+    {
+        // todo password enregistre localement est dangereux, voir solution alternative
+        Utilisateur NUtilisateur = new Utilisateur(UserName,email,password,actualGroupId_);
+        try {
+                // todo l<url a mettre et le format de la reponse pour verifier si loperatin est bien effectuer
+                String reponsePost=DBConnexion.postRequest("URL",Parseur.ParseUserToJsonFormat(NUtilisateur));
+                if(reponsePost=="")
+                return true;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // todo verifier le format de la reponse pour savoir si les changement ont bien ete effectue
+        return false;
     }
     public  void getAllGroupsInformations()
     {

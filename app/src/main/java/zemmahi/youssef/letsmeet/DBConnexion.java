@@ -1,9 +1,6 @@
 package zemmahi.youssef.letsmeet;
 
-import android.app.DownloadManager;
 import android.util.Log;
-
-import com.google.android.gms.appdatasearch.GetRecentContextCall;
 
 import java.io.IOException;
 
@@ -17,12 +14,12 @@ import okhttp3.Response;
 /**
  * Created by youssef on 01/03/2016.
  */
-public class DBConnexion {
+public final class DBConnexion {
 
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
-    public String getRequest(String url) throws IOException {
+    public static String getRequest(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
@@ -35,7 +32,7 @@ public class DBConnexion {
         return temp;
     }
 
-    public String postRequest(String url, String json) throws IOException {
+    public static String postRequest(String url, String json) throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
@@ -43,7 +40,7 @@ public class DBConnexion {
                 .post(body)
                 .build();
         Response response = client.newCall(request).execute();
-        Log.d("response to get",response.toString());
+        Log.d("response to post",response.toString());
         String temp=response.body().string();
         Log.d("body",temp);
         return temp;
