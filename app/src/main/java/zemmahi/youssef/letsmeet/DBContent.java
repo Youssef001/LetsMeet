@@ -16,25 +16,31 @@ import java.util.Map;
  */
 public class DBContent {
 
-    Map<String,Utilisateur> userMap_ = new HashMap<String,Utilisateur>();
-    Map<String,Preference> preferencesMap_ = new HashMap<String,Preference>();
-    Map<String,Groupe> groupsMap_ = new HashMap<String,Groupe>();
-    Map<String,Position> positionsMap_ = new HashMap<String,Position>();
+    // la map contient les utilisateurs qui appartiennent au groupe auquel appartient l'utilisateur
+    private Map<String,Utilisateur> userMap_ = new HashMap<String,Utilisateur>();
+    private Map<String,Preference> preferencesMap_ = new HashMap<String,Preference>();
+    private Map<String,Groupe> groupsMap_ = new HashMap<String,Groupe>();
+    private Map<String,Position> positionsMap_ = new HashMap<String,Position>();
+    private String actualGroupId_= new String();
 
-    public DBContent ()
+    // instance du singleton
+    private static DBContent instance_ = null;
+
+    private DBContent ()
     {
 
     }
-    // initial synchronisation when we start the application
-    public void SynchronizeLocalFromRemoteContent()
+
+    public static DBContent getInstance()
     {
-        SynchronizeLocalUsersFromRemoteContent();
-        SynchronizeLocalGroupsFromRemoteContent();
-        SynchronizeLocalPreferencesFromRemoteContent();
-        SynchronizeLocalPositionsFromRemoteContent();
-        InitialSortOfElements();
+        if(instance_==null)
+        {
+            instance_ = new DBContent();
+        }
+        return instance_;
     }
-    private void InitialSortOfElements()
+
+    private void InitialSyncOfElements()
     {
         for (Map.Entry<String, Preference> preference : preferencesMap_.entrySet())
         {
@@ -67,7 +73,7 @@ public class DBContent {
     }
 
 
-    public  void SynchronizeLocalUsersFromRemoteContent()
+    public  void GetUsersFromGroup(String idGroupe)
     {
         Thread UsersThread = new Thread(new Runnable() {
             public void run() {
@@ -91,7 +97,7 @@ public class DBContent {
             e.printStackTrace();
         }
     }
-    public  void SynchronizeLocalGroupsFromRemoteContent()
+    public  void getAllGroupsInformations()
     {
         Thread GroupsThread = new Thread(new Runnable() {
             public void run() {
@@ -140,7 +146,7 @@ public class DBContent {
         }
     }
 
-    public  void SynchronizeLocalPositionsFromRemoteContent()
+    public  void GetUsersPositions(String IdGroupe)
     {
         Thread PositionsThread= new Thread(new Runnable() {
             public void run() {
@@ -164,5 +170,43 @@ public class DBContent {
             e.printStackTrace();
         }
     }
+    public Map<String, Utilisateur> getUserMap() {
+        return userMap_;
+    }
 
+    public void setUserMap_(Map<String, Utilisateur> userMap) {
+        this.userMap_ = userMap;
+    }
+
+    public Map<String, Preference> getPreferencesMap() {
+        return preferencesMap_;
+    }
+
+    public void setPreferencesMap(Map<String, Preference> preferencesMap) {
+        this.preferencesMap_ = preferencesMap;
+    }
+
+    public Map<String, Groupe> getGroupsMap() {
+        return groupsMap_;
+    }
+
+    public void setGroupsMap(Map<String, Groupe> groupsMap) {
+        this.groupsMap_ = groupsMap;
+    }
+
+    public Map<String, Position> getPositionsMap() {
+        return positionsMap_;
+    }
+
+    public void setPositionsMap(Map<String, Position> positionsMap) {
+        this.positionsMap_ = positionsMap;
+    }
+
+    public String getActualGroupId() {
+        return actualGroupId_;
+    }
+
+    public void setActualGroupId(String actualGroupId) {
+        this.actualGroupId_ = actualGroupId;
+    }
 }
