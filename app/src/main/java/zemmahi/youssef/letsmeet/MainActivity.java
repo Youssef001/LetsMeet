@@ -162,8 +162,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBtnQuit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                finish();
-                System.exit(0);
+
+                Intent intent = new Intent(getApplicationContext(), GoogleAgendaConnection.class);
+                startActivity(intent);
+
+               // finish();
+               // System.exit(0);
 
             }
         });
