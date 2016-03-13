@@ -128,4 +128,13 @@ public final class Parseur {
         }
         return PreferencesMap;
     }
+
+    public static String ParseAuthentificationInfoToJsonFormat(String username, String password) throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("username",username);
+        json.put("password",password);
+
+        return  json.toString();
+    }
 }

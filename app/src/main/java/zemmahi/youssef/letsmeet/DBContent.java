@@ -6,6 +6,8 @@ import android.util.Log;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +25,8 @@ public class DBContent {
     private Map<String,Position> positionsMap_ = new HashMap<String,Position>();
     private String actualGroupId_= new String();
     private String actualUserId_=new String();
+    // seul attribut commun permettant de verifier la reponse a la requette http a l'interieur d'un thread
+    private boolean flagForResponses = false;
 
     // instance du singleton
     private static DBContent instance_ = null;
@@ -103,24 +107,105 @@ public class DBContent {
         }
     }
 
-    public boolean CreerNouvelUtilisateur(String UserName, String email, String password)
+    public boolean CreerNouvelUtilisateur(final String UserName, final String email, final String password)
     {
-        // todo password enregistre localement est dangereux, voir solution alternative
-        Utilisateur NUtilisateur = new Utilisateur(UserName,email,password,actualGroupId_);
+        flagForResponses=false;
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                // todo password enregistre localement est dangereux, voir solution alternative
+                Utilisateur NUtilisateur = new Utilisateur(UserName, email, password, actualGroupId_);
+                try {
+                    // todo l<url a mettre et le format de la reponse pour verifier si loperatin est bien effectuer
+                    // reponse true ou false du cote serveur
+                    String reponsePost = DBConnexion.postRequest("URL", Parseur.ParseUserToJsonFormat(NUtilisateur));
+                    // todo verifier le format de la reponse pour savoir si les changement ont bien ete effectue
+                    if(reponsePost.contentEquals(""))
+                    {
+                        flagForResponses=true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }});
+        thread.start();
         try {
-                // todo l<url a mettre et le format de la reponse pour verifier si loperatin est bien effectuer
-                String reponsePost=DBConnexion.postRequest("URL",Parseur.ParseUserToJsonFormat(NUtilisateur));
-                if(reponsePost=="")
-                return true;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            thread.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return flagForResponses;
 
-        // todo verifier le format de la reponse pour savoir si les changement ont bien ete effectue
-        return false;
+    }
+    public boolean authentification(final String username, final String password)
+    {;
+        flagForResponses=false;
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    //todo right url
+                    String reponsePost= DBConnexion.postRequest("url",Parseur.ParseAuthentificationInfoToJsonFormat(username, password));
+                   // todo response format true or false
+                    if(reponsePost.contentEquals(""))
+                    {
+                        flagForResponses=true;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return flagForResponses;
+    }
+
+    void mettreAjourPositionsMembresDuGroupe()
+    {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                // todo right url
+                String url = "";
+                try {
+                    url+="?groupe_idgroupe=" + URLEncoder.encode(actualGroupId_,"UTF-8");
+                    Map<String, Position> newPositions= new HashMap<String, Position>();
+
+                    try {
+                        newPositions = Parseur.ParseToPositionsMap(DBConnexion.getRequest(url));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    for(Map.Entry<String, Utilisateur> entry : userMap_.entrySet())
+                    {
+                        if(newPositions.containsKey(entry.getValue().getPositionId()))
+                        {
+                            entry.getValue().setPosition(newPositions.get(entry.getValue().getPositionId()));
+                        }
+                        else
+                        {
+                            Log.d("Probelem","when updating users position");
+                        }
+                    }
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            } });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     public  void getAllGroupsInformations()
     {
@@ -233,5 +318,13 @@ public class DBContent {
 
     public void setActualGroupId(String actualGroupId) {
         this.actualGroupId_ = actualGroupId;
+    }
+
+    public String getActualUserId() {
+        return actualUserId_;
+    }
+
+    public void setActualUserId(String actualUserId_) {
+        this.actualUserId_ = actualUserId_;
     }
 }
