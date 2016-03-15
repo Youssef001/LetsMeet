@@ -20,7 +20,7 @@ public class Utilisateur {
     private String positionId_=new String();
     private String groupeId_=new String();
     private String password_=new String();
-    UUID uidFormat_ = UUID.fromString("91c83b36-e25c-11e5-9730-9a79f06e9478");
+    private UUID uidFormat_ = UUID.fromString("91c83b36-e25c-11e5-9730-9a79f06e9478");
 
     public Utilisateur()
    {

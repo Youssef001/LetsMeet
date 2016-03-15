@@ -14,4 +14,6 @@ public final class Constants {
     static public final String AccessGranted = "AccessGranted";
     static public final String UserAdded="UserAdded";
     static public final String UserNotAdded="UserNotAdded";
+    static public final String GroupAdded="GroupAdded";
+    static public final String GroupNotAdded="GroupNotAdded";
 }

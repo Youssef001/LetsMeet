@@ -130,8 +130,8 @@ public final class Parseur {
     public static String ParseAuthentificationInfoToJsonFormat(String courriel, String password) throws JSONException {
         JSONObject json = new JSONObject();
 
-        json.put("username",courriel);
-        json.put("password",password);
+        json.put("username", courriel);
+        json.put("password", password);
 
         return  json.toString();
     }
@@ -180,5 +180,42 @@ public final class Parseur {
         jsonPos.put("position",json.toString());
 
         return jsonPos.toString();
+    }
+    public static String ParseGroupToJsonFormat(Groupe groupe) throws JSONException {
+        JSONObject res = new JSONObject();
+        res.put("idgroupe",groupe.getId());
+        res.put("nom",groupe.getGroupName());
+        return res.toString();
+    }
+    public static String ParsePreferencesToJsonFormat(Utilisateur user) throws JSONException {
+        JSONArray jArray = new JSONArray();
+
+        for (int i=0;i<3;i++)
+        {
+            JSONObject json = parsePreferenceToJsonObject (user.getUserPreferences()[i]);
+            json.put("idutilisateur",user.getId());
+            jArray.put(json.toString());
+        }
+
+        return jArray.toString();
+    }
+
+    private static JSONObject parsePreferenceToJsonObject (Preference preference) throws JSONException {
+        JSONObject json=new JSONObject();
+        json.put("idpreferences",preference.getId());
+        json.put("endroit",preference.getAdresse());
+
+        switch (preference.getPriority())
+        {
+            case Constants.highPriority:
+                json.put("priorite","1");
+                break;
+            case Constants.mediumPriority:
+                json.put("priorite","2");
+                break;
+            case Constants.lowPriority:
+                json.put("priorite","2");
+        }
+        return json;
     }
 }

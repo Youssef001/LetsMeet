@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.transform.sax.TemplatesHandler;
+
 /**
  * Created by youssef on 05/03/2016.
  */
@@ -219,32 +221,6 @@ public class DBContent {
         }
     }
 
-    // recuperation de la liste
-    public  void GetUsersFromGroup(String idGroupe)
-    {
-        // le clear au cas ou
-        userMap_.clear();
-        Thread UsersThread = new Thread(new Runnable() {
-            public void run() {
-                Log.d("Users test", "c mon test a moi");
-                try{
-                    // TODO set the right url
-                    userMap_ = Parseur.ParseToUsersMap(DBConnexion.getRequest("http://najibarbaoui.com/najib/utilisateurs.php"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-        UsersThread.start();
-        try {
-            UsersThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     // recuperation d'un utilisateur selon son id
     public Utilisateur getUserById(final String idUser)
     {
@@ -327,6 +303,89 @@ public class DBContent {
         GroupsThread.start();
         try {
             GroupsThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    // ajouter nouveau groupe
+    public String AddNewGroupToRemoteContent(String nom)
+    {
+        responseStr=Constants.GroupNotAdded;
+        final Groupe group = new Groupe(nom);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String reponse = DBConnexion.postRequest("http://najibarbaoui.com/najib/insert_groupe.php",
+                            Parseur.ParseGroupToJsonFormat(group));
+                    if(reponse.contentEquals("0"))
+                    {
+                        responseStr=Constants.GroupAdded;
+                        actualGroupId_=group.getId();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return responseStr;
+    }
+    // ajout des preferences a la db
+    public void addPreferencesToRemoteContent(final Utilisateur user)
+    {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String preferencesStr = Parseur.ParsePreferencesToJsonFormat(user);
+                    DBConnexion.postRequest("http://najibarbaoui.com/najib/insert_preferences.php",preferencesStr);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    // recuperation de la liste des utilisateurs selon l'id du groupe
+    public  void GetUsersFromGroup(final String idGroupe)
+    {
+        // le clear au cas ou
+        userMap_.clear();
+        Thread UsersThread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("Users test", "c mon test a moi");
+                try{
+                    userMap_ = Parseur.ParseToUsersMap(DBConnexion.getRequest(" http://najibarbaoui.com/najib/utilisateurbygroupe.php?id_groupe="
+                    + URLEncoder.encode(idGroupe,"UTF-8")));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        UsersThread.start();
+        try {
+            UsersThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
