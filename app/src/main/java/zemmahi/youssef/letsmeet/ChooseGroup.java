@@ -1,8 +1,11 @@
 package zemmahi.youssef.letsmeet;
 
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +19,9 @@ import android.view.Window;
 
 public class ChooseGroup extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Fragment fragment_ = null;
+    private boolean viewIsAtHome_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,8 @@ public class ChooseGroup extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        displayView(R.id.nav_home);
     }
 
     @Override
@@ -49,8 +57,11 @@ public class ChooseGroup extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }
+        if (!viewIsAtHome_) { //if the current view is not the home fragment
+            displayView(R.id.nav_home); //display the home fragment
         } else {
-            super.onBackPressed();
+            moveTaskToBack(true);  //If view is in home fragment, exit application
         }
     }
 
@@ -79,25 +90,44 @@ public class ChooseGroup extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        displayView(item.getItemId());
+        return true;
+    }
+    public void displayView(int viewId) {
+        boolean isEditProfileSelected = false;
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        String title = getString(R.string.app_name);
+        switch (viewId) {
+            case R.id.nav_home:
+                fragment_ = new NavHomeFragment();
+                title  = "Home";
+                viewIsAtHome_ = true;
 
-        } else if (id == R.id.nav_slideshow) {
+                break;
+            case R.id.nav_edtProfile:
 
-        } else if (id == R.id.nav_manage) {
+                Intent i = new Intent(getBaseContext(), EditProfile.class);
+                startActivity(i);
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+                viewIsAtHome_ = false;
+                break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+
+        //if(!isEditProfileSelected) {
+            if (fragment_ != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment_);
+                ft.commit();
+            }
+
+            // set the toolbar title
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(title);
+            }
+
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        //}
     }
 }

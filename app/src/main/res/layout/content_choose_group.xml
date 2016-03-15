@@ -12,4 +12,9 @@
     tools:context="zemmahi.youssef.letsmeet.ChooseGroup"
     tools:showIn="@layout/app_bar_choose_group">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/content_frame"/>
+
 </RelativeLayout>

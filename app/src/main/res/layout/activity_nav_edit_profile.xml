@@ -4,10 +4,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="#faa">
+    >
 
     <ImageView
-        android:id="@+id/imgVwProfileImgSU"
+        android:id="@+id/imgVwProfileImgEP"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="20dp"
@@ -17,71 +17,61 @@
         android:src="@drawable/ic_photos"
         />
     <Button
-        android:id="@+id/btnSetImgSU"
-        android:layout_toRightOf="@+id/imgVwProfileImgSU"
-        android:layout_alignBottom="@id/imgVwProfileImgSU"
-        android:layout_width="138dp"
-        android:layout_height="50dp"
+        android:id="@+id/btnUpdateImgEP"
+        android:layout_toRightOf="@+id/imgVwProfileImgEP"
+        android:layout_alignBottom="@id/imgVwProfileImgEP"
+        android:layout_width="128dp"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:onClick="setProfileImage"
-        android:text="Set your photo"
+        android:text="Update your photo"
         />
+    <EditText
+        android:id="@+id/edtTxtAncienPasswordEP"
 
-    <EditText
-        android:id="@+id/edtTxtUserNameSU"
-        android:layout_below="@+id/imgVwProfileImgSU"
+        android:layout_below="@+id/btnUpdateImgEP"
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:layout_centerHorizontal="true"
-        android:hint="Pick a username"
-        />
-    <EditText
-        android:id="@+id/edtTxtEmailSU"
-        android:layout_below="@+id/edtTxtUserNameSU"
-        android:layout_width="300dp"
-        android:layout_height="45dp"
-        android:layout_centerHorizontal="true"
-        android:hint="Your email address"
-        android:inputType="textEmailAddress"
-        />
-    <EditText
-        android:id="@+id/edtTxtPasswordSU"
-        android:layout_below="@+id/edtTxtEmailSU"
-        android:layout_width="300dp"
-        android:layout_height="45dp"
-        android:layout_centerHorizontal="true"
-        android:hint="Create a password"
+        android:hint="Enter your last password"
         android:inputType="textLongMessage"
         />
     <EditText
-        android:id="@+id/edtTxtConfirmPasswordSU"
-        android:layout_below="@+id/edtTxtPasswordSU"
+        android:id="@+id/edtTxtNewPasswordEP"
+        android:layout_below="@+id/edtTxtAncienPasswordEP"
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:layout_centerHorizontal="true"
-        android:hint="Confirm password"
+        android:hint="Create a new password"
+        android:inputType="textLongMessage"
+        />
+    <EditText
+        android:id="@+id/edtTxtConfirmNewPasswordEP"
+        android:layout_below="@+id/edtTxtNewPasswordEP"
+        android:layout_width="300dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:hint="Confirm new password"
         android:inputType="textLongMessage"
         />
     <Button
-        android:id="@+id/btnCreateAccountSU"
-        android:layout_below="@+id/edtTxtConfirmPasswordSU"
+        android:id="@+id/btnUpdateProfileEP"
+        android:layout_below="@+id/edtTxtConfirmNewPasswordEP"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:onClick="goToLevels"
-        android:text="Create your account"
+        android:text="Update your profile"
         />
     <Button
-        android:id="@+id/btnBackToMainMenuSU"
-        android:layout_below="@+id/btnCreateAccountSU"
+        android:id="@+id/btnBackToHomeEP"
+        android:layout_below="@+id/btnUpdateProfileEP"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:onClick="goToLevels"
-        android:text="Back to main menu"
+        android:text="Back to home"
         />
 
 </RelativeLayout>
