@@ -17,7 +17,7 @@ public class Position {
     private double longitude_=0.0;
     private double latitude_=0.0;
     private double radius_=0.0;
-    private Adresse adresse_ = new Adresse();
+    private String adresse_=new String();
     private Date date_;
 
     public Position()
@@ -56,13 +56,6 @@ public class Position {
         this.latitude_ = latitude;
     }
 
-    public Adresse getAdresse() {
-        return adresse_;
-    }
-
-    public void setAdresse_(Adresse adresse) {
-        this.adresse_ = adresse;
-    }
 
     public Date getDate()
     {
@@ -94,5 +87,13 @@ public class Position {
 
     public void setRadius(double radius) {
         this.radius_ = radius;
+    }
+
+    public String getAdresse() {
+        return adresse_;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse_ = adresse;
     }
 }

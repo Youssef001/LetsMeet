@@ -7,7 +7,6 @@ import java.util.UUID;
  */
 public class Preference {
     private String id_=new String();
-    private String idLocarion_=new String();
     private String adresse_ = new String();
     private String priority_=Constants.DefaultPriority;
     private String userId_=new String();
@@ -17,18 +16,12 @@ public class Preference {
     {
         id_=uidFormat_.randomUUID().toString();
     }
-    public Preference(String priority)
+    public Preference(String adresse,String priority,String userId)
     {
         id_=uidFormat_.randomUUID().toString();
         priority_=priority;
-    }
-
-    public String getIdLocarion() {
-        return idLocarion_;
-    }
-
-    public void setIdLocation(String id) {
-        this.idLocarion_ = id;
+        adresse_=adresse;
+        userId_=userId;
     }
 
     public String getPriority() {

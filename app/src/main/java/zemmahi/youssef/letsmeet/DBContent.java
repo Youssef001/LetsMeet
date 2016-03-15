@@ -53,6 +53,18 @@ public class DBContent {
         instance_=null;
     }
 
+    public void addPreference(String priorite, String adresse)
+    {
+        Preference preference = new Preference(adresse,priorite,actualUserId_);
+        userMap_.get(actualUserId_).addPreferences(preference);
+
+    }
+
+    // echanger les priorite de deux preferences
+    public void switchUserPreferences(int x,int y)
+    {
+        userMap_.get(actualUserId_).switchPreferencesPriorities(x,y);
+    }
     // recupere l'utilisateur actuel
     public Utilisateur getActualUser()
     {
