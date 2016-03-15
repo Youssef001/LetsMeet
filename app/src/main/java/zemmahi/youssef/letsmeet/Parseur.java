@@ -1,5 +1,7 @@
 package zemmahi.youssef.letsmeet;
 
+import com.google.api.client.json.Json;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,41 +40,28 @@ public final class Parseur {
         }
     return usersMap;
     }
-    public static String ParseUserToJsonFormat(Utilisateur user) throws JSONException {
-        JSONObject userJson = new JSONObject();
-        JSONObject positionJson=new JSONObject();
-        JSONObject json=new JSONObject();
-        // create user
-        userJson.put("idutilisateur",user.getId());
-        userJson.put("courriel",user.getCourriel());
-        userJson.put("photo",user.getPhotoEn64());
-        if(user.isPlanner())
+
+    public static Utilisateur ParseJsonToUser(String userStr) throws JSONException {
+        JSONArray temp = new JSONArray(userStr);
+        // recuperation de la premiere case de l'array
+        JSONObject json = temp.getJSONObject(0);
+        Utilisateur user= new Utilisateur();
+        user.setId(json.getString("idutilisateur"));
+        user.setCourriel(json.getString("courriel"));
+        user.setPhotoEn64(json.getString("photo"));
+        user.setGroupeId(json.getString("groupe_idgroupe"));
+        user.setPositionId(json.getString("position_idposition"));
+        //user.setPassword(json.getString("password"));
+        if(json.getString("organisateur").contentEquals("1"))
         {
-            userJson.put("organisateur","1");
+            user.setIsPlanner(true);
         }
         else
         {
-            userJson.put("organisateur","0");
+            user.setIsPlanner(false);
         }
-
-        userJson.put("position_idposition",user.getPositionId());
-        userJson.put("groupe_idgroupe",user.getGroupeId());
-        userJson.put("password",user.getPassword());
-
-
-        // creation de la partie position
-        positionJson.put("idposition",user.getPositionId());
-        positionJson.put("latitude",user.getPosition().getLatitude());
-        positionJson.put("longitude",user.getPosition().getLongitude());
-        positionJson.put("position_time",user.getPosition().getDateString());
-
-        // JSON FINAL
-        json.put("position",positionJson.toString());
-        json.put("utilisateur",userJson.toString());
-        return json.toString();
-
+        return user;
     }
-
     public static Map<String,Position> ParseToPositionsMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         Map<String,Position> positionsMap= new HashMap<String,Position>();
@@ -129,12 +118,58 @@ public final class Parseur {
         return PreferencesMap;
     }
 
-    public static String ParseAuthentificationInfoToJsonFormat(String username, String password) throws JSONException {
+    public static String ParseAuthentificationInfoToJsonFormat(String courriel, String password) throws JSONException {
         JSONObject json = new JSONObject();
 
-        json.put("username",username);
+        json.put("username",courriel);
         json.put("password",password);
 
         return  json.toString();
+    }
+    public static String ParseUserToJsonFormat(Utilisateur user) throws JSONException {
+        JSONObject userJson = new JSONObject();
+        JSONObject positionJson=new JSONObject();
+        JSONObject json=new JSONObject();
+        // create user
+        userJson.put("idutilisateur",user.getId());
+        userJson.put("courriel",user.getCourriel());
+        userJson.put("photo",user.getPhotoEn64());
+        if(user.isPlanner())
+        {
+            userJson.put("organisateur","1");
+        }
+        else
+        {
+            userJson.put("organisateur","0");
+        }
+
+        userJson.put("position_idposition",user.getPositionId());
+        userJson.put("groupe_idgroupe",user.getGroupeId());
+        userJson.put("password",user.getPassword());
+
+
+        // creation de la partie position
+        positionJson.put("idposition",user.getPositionId());
+        positionJson.put("latitude",user.getPosition().getLatitude());
+        positionJson.put("longitude",user.getPosition().getLongitude());
+        positionJson.put("position_time",user.getPosition().getDateString());
+
+        // JSON FINAL
+        json.put("position",positionJson.toString());
+        json.put("utilisateur",userJson.toString());
+        return json.toString();
+
+    }
+    public static String ParsePositionToJsonFormat(Position pos) throws JSONException {
+        JSONObject json = new JSONObject();
+        JSONObject jsonPos = new JSONObject();
+        json.put("idposition",pos.getId());
+        json.put("latitude",pos.getLatitude());
+        json.put("longitude",pos.getLongitude());
+        json.put("position_time",pos.getDateString());
+
+        jsonPos.put("position",json.toString());
+
+        return jsonPos.toString();
     }
 }

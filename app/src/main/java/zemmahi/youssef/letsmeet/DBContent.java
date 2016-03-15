@@ -4,6 +4,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -27,6 +28,7 @@ public class DBContent {
     private String actualUserId_=new String();
     // seul attribut commun permettant de verifier la reponse a la requette http a l'interieur d'un thread
     private boolean flagForResponses = false;
+    private String responseStr = new String();
 
     // instance du singleton
     private static DBContent instance_ = null;
@@ -49,6 +51,17 @@ public class DBContent {
         instance_=null;
     }
 
+    // recupere l'utilisateur actuel
+    public Utilisateur getActualUser()
+    {
+        return userMap_.get(actualUserId_);
+    }
+    // recupere le groupe actuel
+    public Groupe getActualGroup()
+    {
+        return groupsMap_.get(actualGroupId_);
+    }
+    // todo fonction a revoir si utile ou pas
     private void InitialSyncOfElements()
     {
         for (Map.Entry<String, Preference> preference : preferencesMap_.entrySet())
@@ -80,48 +93,23 @@ public class DBContent {
         }
 
     }
-
-
-    public  void GetUsersFromGroup(String idGroupe)
+    // creation d'utilisateur gere , retourn si added ou pas
+    public String CreerNouvelUtilisateur(final String UserName, final String email, final String password)
     {
-        Thread UsersThread = new Thread(new Runnable() {
-            public void run() {
-                Log.d("Users test", "c mon test a moi");
-                DBConnexion con=new DBConnexion();
-                try{
-                    // TODO set the right url
-                    userMap_ = Parseur.ParseToUsersMap(con.getRequest("http://najibarbaoui.com/najib"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-        UsersThread.start();
-        try {
-            UsersThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean CreerNouvelUtilisateur(final String UserName, final String email, final String password)
-    {
-        flagForResponses=false;
+        responseStr=Constants.UserNotAdded;
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 // todo password enregistre localement est dangereux, voir solution alternative
                 Utilisateur NUtilisateur = new Utilisateur(UserName, email, password, actualGroupId_);
                 try {
-                    // todo l<url a mettre et le format de la reponse pour verifier si loperatin est bien effectuer
+                    Log.d("CreerNouvelUtilisateur","cest mon test a moi");
                     // reponse true ou false du cote serveur
-                    String reponsePost = DBConnexion.postRequest("URL", Parseur.ParseUserToJsonFormat(NUtilisateur));
-                    // todo verifier le format de la reponse pour savoir si les changement ont bien ete effectue
-                    if(reponsePost.contentEquals(""))
+                    String reponsePost = DBConnexion.postRequest(" http://najibarbaoui.com/najib/insert_utilisateur.php", Parseur.ParseUserToJsonFormat(NUtilisateur));
+                    if(reponsePost.contentEquals("0"))
                     {
-                        flagForResponses=true;
+                        responseStr=Constants.UserAdded;
+                        actualGroupId_=NUtilisateur.getId();
+                        actualGroupId_=NUtilisateur.getGroupeId();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -135,21 +123,33 @@ public class DBContent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return flagForResponses;
+        return responseStr;
 
     }
-    public boolean authentification(final String username, final String password)
+
+    // authentification envoit une requette au serveur le serveur renvoit une reponse positive ou negative
+    // si positive, renvoit les infos de l<utilisateur
+    public String authentification(final String courriel, final String password)
     {;
-        flagForResponses=false;
+        responseStr=Constants.WrongEmail;
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    //todo right url
-                    String reponsePost= DBConnexion.postRequest("url",Parseur.ParseAuthentificationInfoToJsonFormat(username, password));
-                   // todo response format true or false
-                    if(reponsePost.contentEquals(""))
+                    Log.d("authentification","c<est mon test a moi");
+                    String reponsePost= DBConnexion.postRequest("http://najibarbaoui.com/najib/ouvrirsession.php",Parseur.ParseAuthentificationInfoToJsonFormat(courriel, password));
+
+                    if(reponsePost.contentEquals("0"))
                     {
-                        flagForResponses=true;
+                        responseStr=Constants.WrongPassword;
+                    }
+                    else if(!reponsePost.contentEquals("1"))
+                    {
+                        responseStr=Constants.AccessGranted;
+                        Utilisateur utilisateurActuel;
+                        utilisateurActuel = Parseur.ParseJsonToUser(reponsePost);
+                        actualUserId_=utilisateurActuel.getId();
+                        actualGroupId_=utilisateurActuel.getGroupeId();
+                        userMap_.put(actualUserId_, utilisateurActuel);
                     }
 
                 } catch (IOException e) {
@@ -164,7 +164,87 @@ public class DBContent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return flagForResponses;
+        return responseStr;
+    }
+
+    // fonction de mise a jour de la position de l'utilisateur actuel dans la BD
+    public void UpdateRemotePosition()
+    {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("UpdatePosition", "c mon test a moi");
+                try {
+                    DBConnexion.postRequest("http://najibarbaoui.com/najib/update_position.php",
+                            Parseur.ParsePositionToJsonFormat(userMap_.get(actualUserId_).getPosition()));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // recuperation de tous les utilisateurs
+    public  void getAllUsers()
+    {
+        // le clear au cas ou la map contient deja klke chose
+        userMap_.clear();
+        Thread UsersThread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("Users test", "c mon test a moi");
+                try{
+                    // TODO set the right url
+                    userMap_ = Parseur.ParseToUsersMap(DBConnexion.getRequest("http://najibarbaoui.com/najib/utilisateurs.php"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        UsersThread.start();
+        try {
+            UsersThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // recuperation de la liste
+    public  void GetUsersFromGroup(String idGroupe)
+    {
+        // le clear au cas ou
+        userMap_.clear();
+        Thread UsersThread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("Users test", "c mon test a moi");
+                try{
+                    // TODO set the right url
+                    userMap_ = Parseur.ParseToUsersMap(DBConnexion.getRequest("http://najibarbaoui.com/najib/utilisateurs.php"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        UsersThread.start();
+        try {
+            UsersThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     void mettreAjourPositionsMembresDuGroupe()
