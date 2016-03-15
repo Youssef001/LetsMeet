@@ -63,7 +63,24 @@ public class DBContent {
     // echanger les priorite de deux preferences
     public void switchUserPreferences(int x,int y)
     {
-        userMap_.get(actualUserId_).switchPreferencesPriorities(x,y);
+        userMap_.get(actualUserId_).switchPreferencesPriorities(x, y);
+    }
+
+    // cree une nouvelle rencontre dans le groupe actuel par l'utilisateur actuel avec les infos en paramettre
+    public boolean creerRencontre(String lieu, String description, String date)
+    {
+        return groupsMap_.get(actualGroupId_).setRencontre(new Rencontre(lieu,description,actualUserId_,actualGroupId_,date));
+    }
+
+    // dans le cas ou il n'est pas creer il instancie un nouveau et offre la possibilite de le modifier
+    // si deja creer peut etre recuperer pour modifier ses attrinuts et infos necessaires
+    public Rencontre recupererRencontre()
+    {
+        if(groupsMap_.get(actualGroupId_).getRencontre()==null)
+        {
+            groupsMap_.get(actualGroupId_).setRencontre(new Rencontre());
+        }
+        return groupsMap_.get(actualGroupId_).getRencontre();
     }
     // recupere l'utilisateur actuel
     public Utilisateur getActualUser()
@@ -442,6 +459,35 @@ public class DBContent {
             e.printStackTrace();
         }
     }
+
+    public Rencontre recupererLaRencontreGroupeBD(final String idGroupe)
+    {
+        final Rencontre[] rencontre = new Rencontre[1];
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String reponse = DBConnexion.getRequest("http://najibarbaoui.com/najib/rencontrebygroupe.php?id_groupe="
+                    + URLEncoder.encode(idGroupe,"UTF-8"));
+                    rencontre[0] =Parseur.ParseJsonToRencontre(reponse);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return rencontre[0];
+    }
+
     public void SynchronizeLocalPreferencesFromRemoteContent()
     {
         Thread PreferencesThread = new Thread(new Runnable() {

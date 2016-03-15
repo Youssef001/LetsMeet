@@ -126,6 +126,21 @@ public final class Parseur {
         groupe.setGroupName(json.getString("nom"));
         return groupe;
     }
+    public static Rencontre ParseJsonToRencontre(String rencontreStr) throws JSONException {
+        JSONArray jsonArray = new JSONArray(rencontreStr);
+        JSONObject json=jsonArray.getJSONObject(0);
+
+        Rencontre rencontre = new Rencontre();
+        rencontre.setId(json.getString("idrencontre"));
+        rencontre.setLieu(json.getString("lieu"));
+        //todo
+        //rencontre.setDateStr(json.getString("jour"));
+        rencontre.setDescription(json.getString("description"));
+        rencontre.setIdGroupe(json.getString("groupe_idgroupe"));
+        rencontre.setIdPlanner(json.getString("idorganisateur"));
+        return rencontre;
+
+    }
 
     public static String ParseAuthentificationInfoToJsonFormat(String courriel, String password) throws JSONException {
         JSONObject json = new JSONObject();
