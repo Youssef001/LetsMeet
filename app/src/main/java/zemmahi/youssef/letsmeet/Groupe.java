@@ -27,7 +27,7 @@ public class Groupe {
         return name_;
     }
 
-    public void setGrouoName(String name)
+    public void setGroupName(String name)
     {
         name_=name;
     }

@@ -40,28 +40,6 @@ public final class Parseur {
         }
     return usersMap;
     }
-
-    public static Utilisateur ParseJsonToUser(String userStr) throws JSONException {
-        JSONArray temp = new JSONArray(userStr);
-        // recuperation de la premiere case de l'array
-        JSONObject json = temp.getJSONObject(0);
-        Utilisateur user= new Utilisateur();
-        user.setId(json.getString("idutilisateur"));
-        user.setCourriel(json.getString("courriel"));
-        user.setPhotoEn64(json.getString("photo"));
-        user.setGroupeId(json.getString("groupe_idgroupe"));
-        user.setPositionId(json.getString("position_idposition"));
-        //user.setPassword(json.getString("password"));
-        if(json.getString("organisateur").contentEquals("1"))
-        {
-            user.setIsPlanner(true);
-        }
-        else
-        {
-            user.setIsPlanner(false);
-        }
-        return user;
-    }
     public static Map<String,Position> ParseToPositionsMap(String message) throws JSONException {
         JSONArray json=new JSONArray(message);
         Map<String,Position> positionsMap= new HashMap<String,Position>();
@@ -85,7 +63,7 @@ public final class Parseur {
         {
             Groupe groupe= new Groupe();
             groupe.setId(json.getJSONObject(i).getString("idgroupe"));
-            groupe.setGrouoName(json.getJSONObject(i).getString("nom"));
+            groupe.setGroupName(json.getJSONObject(i).getString("nom"));
             groupesMap.put(groupe.getId(), groupe);
         }
         return groupesMap;
@@ -116,6 +94,37 @@ public final class Parseur {
             PreferencesMap.put(preference.getId(), preference);
         }
         return PreferencesMap;
+    }
+
+    public static Utilisateur ParseJsonToUser(String userStr) throws JSONException {
+        JSONArray temp = new JSONArray(userStr);
+        // recuperation de la premiere case de l'array
+        JSONObject json = temp.getJSONObject(0);
+        Utilisateur user= new Utilisateur();
+        user.setId(json.getString("idutilisateur"));
+        user.setCourriel(json.getString("courriel"));
+        user.setPhotoEn64(json.getString("photo"));
+        user.setGroupeId(json.getString("groupe_idgroupe"));
+        user.setPositionId(json.getString("position_idposition"));
+        //user.setPassword(json.getString("password"));
+        if(json.getString("organisateur").contentEquals("1"))
+        {
+            user.setIsPlanner(true);
+        }
+        else
+        {
+            user.setIsPlanner(false);
+        }
+        return user;
+    }
+    public static Groupe ParseJsonToGroup(String groupestr) throws JSONException {
+        Groupe groupe = new Groupe();
+        JSONArray Ajson = new JSONArray(groupestr);
+        JSONObject json = Ajson.getJSONObject(0);
+
+        groupe.setId(json.getString("idgroupe"));
+        groupe.setGroupName(json.getString("nom"));
+        return groupe;
     }
 
     public static String ParseAuthentificationInfoToJsonFormat(String courriel, String password) throws JSONException {

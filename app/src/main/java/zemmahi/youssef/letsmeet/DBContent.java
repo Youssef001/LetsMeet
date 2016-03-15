@@ -102,9 +102,9 @@ public class DBContent {
                 // todo password enregistre localement est dangereux, voir solution alternative
                 Utilisateur NUtilisateur = new Utilisateur(UserName, email, password, actualGroupId_);
                 try {
-                    Log.d("CreerNouvelUtilisateur","cest mon test a moi");
+                    Log.d("CreerNouvelUtilisateur", "cest mon test a moi");
                     // reponse true ou false du cote serveur
-                    String reponsePost = DBConnexion.postRequest(" http://najibarbaoui.com/najib/insert_utilisateur.php", Parseur.ParseUserToJsonFormat(NUtilisateur));
+                    String reponsePost = DBConnexion.postRequest("http://najibarbaoui.com/najib/insert_utilisateur.php", Parseur.ParseUserToJsonFormat(NUtilisateur));
                     if(reponsePost.contentEquals("0"))
                     {
                         responseStr=Constants.UserAdded;
@@ -128,14 +128,14 @@ public class DBContent {
     }
 
     // authentification envoit une requette au serveur le serveur renvoit une reponse positive ou negative
-    // si positive, renvoit les infos de l<utilisateur
+    // si positive, renvoit les infos de l<utilisateur sinon renvoit quelle est le probleme
     public String authentification(final String courriel, final String password)
     {;
         responseStr=Constants.WrongEmail;
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 try {
-                    Log.d("authentification","c<est mon test a moi");
+                    Log.d("authentification", "c<est mon test a moi");
                     String reponsePost= DBConnexion.postRequest("http://najibarbaoui.com/najib/ouvrirsession.php",Parseur.ParseAuthentificationInfoToJsonFormat(courriel, password));
 
                     if(reponsePost.contentEquals("0"))
@@ -171,7 +171,6 @@ public class DBContent {
     public void UpdateRemotePosition()
     {
         Thread thread = new Thread(new Runnable() {
-            @Override
             public void run() {
                 Log.d("UpdatePosition", "c mon test a moi");
                 try {
@@ -246,8 +245,93 @@ public class DBContent {
             e.printStackTrace();
         }
     }
+    // recuperation d'un utilisateur selon son id
+    public Utilisateur getUserById(final String idUser)
+    {
+        if( userMap_.containsKey(idUser))
+        {
+            return userMap_.get(idUser);
+        }
+        else
+        {
+            final Utilisateur[] user = new Utilisateur[1];
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
 
-    void mettreAjourPositionsMembresDuGroupe()
+                    try {
+                        user[0] = Parseur.ParseJsonToUser(DBConnexion.getRequest("http://najibarbaoui.com/najib/utilisateur.php?id_utilisateur="
+                        + URLEncoder.encode(idUser,"UTF-8")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return user[0];
+        }
+    }
+
+    // recuperation des informations d'un groupe a partir de l'id d'un utilisateur de ce groupe
+    public Groupe getGroupdInformationFromUserId(final String userId)
+    {
+        final Groupe[] groupe = new Groupe[1];
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String reponse = DBConnexion.getRequest("http://najibarbaoui.com/najib/groupebyidutilisateur.php?id_utilisateur="+
+                            URLEncoder.encode(userId,"UTF-8"));
+                    groupe[0] =Parseur.ParseJsonToGroup(reponse);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return groupe[0];
+    }
+    public  void getAllGroupsInformations()
+    {
+       // au cas ou
+        groupsMap_.clear();
+        Thread GroupsThread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("Groups test", "c mon test a moi");
+                DBConnexion con=new DBConnexion();
+                try{
+                    // TODO set the right url
+                    groupsMap_ = Parseur.ParseToGroupeMap(con.getRequest("http://najibarbaoui.com/najib/groupe.php"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        GroupsThread.start();
+        try {
+            GroupsThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public void mettreAjourPositionsMembresDuGroupe()
     {
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -283,30 +367,6 @@ public class DBContent {
         thread.start();
         try {
             thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    public  void getAllGroupsInformations()
-    {
-        Thread GroupsThread = new Thread(new Runnable() {
-            public void run() {
-                Log.d("Groups test", "c mon test a moi");
-                DBConnexion con=new DBConnexion();
-                try{
-                    // TODO set the right url
-                    groupsMap_ = Parseur.ParseToGroupeMap(con.getRequest("http://najibarbaoui.com/najib"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-        GroupsThread.start();
-        try {
-            GroupsThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
