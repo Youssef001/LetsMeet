@@ -130,13 +130,13 @@ public class UserList extends FragmentActivity implements OnMapReadyCallback, Go
                     Log.e("search", "here---------------- listener");
 
                     Utilisateur utilisateurData = fUtilisateurs.get(i);
-                    Toast.makeText(UserList.this, "You've selected: " + utilisateurData.getName(), Toast.LENGTH_LONG).show();
+                   // Toast.makeText(UserList.this, "You've selected: " + utilisateurData.getName(), Toast.LENGTH_LONG).show();
                     double currentLatitude = utilisateurData.getPosition().getLatitude();
                     double currentLongitude = utilisateurData.getPosition().getLongitude();
                     LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-                    MarkerOptions options = new MarkerOptions().position(latLng).title("Location of " + utilisateurData.getName());
+                   // MarkerOptions options = new MarkerOptions().position(latLng).title("Location of " + utilisateurData.getName());
                     fMap.clear();
-                    fMap.addMarker(options);
+                   // fMap.addMarker(options);
                     fMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
             });
