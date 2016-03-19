@@ -20,7 +20,7 @@ public class Utilisateur {
     private String positionId_=new String();
     private String groupeId_=new String();
     private String password_=new String();
-    UUID uidFormat_ = UUID.fromString("91c83b36-e25c-11e5-9730-9a79f06e9478");
+    private UUID uidFormat_ = UUID.fromString("91c83b36-e25c-11e5-9730-9a79f06e9478");
 
     public Utilisateur()
    {
@@ -115,17 +115,22 @@ public class Utilisateur {
         this.userPreferences_ = userPreferences;
     }
 
-    public boolean addPreferences(Preference preference)
+    public void addPreferences(Preference preference)
     {
+        boolean addedFlag=false;
         for (int i=0;i<3;i++)
         {
             if(userPreferences_[i]==null)
             {
                 userPreferences_[i]=preference;
-                return true;
+                return;
+            }
+            else if(preference.getPriority().contentEquals(userPreferences_[i].getPriority()))
+            {
+                userPreferences_[i]=preference;
+                return;
             }
         }
-        return  false;
     }
 // indice a recevoir de 0 a 2
     public boolean switchPreferencesPriorities(int x, int y )

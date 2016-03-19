@@ -4,6 +4,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.transform.sax.TemplatesHandler;
 
 /**
  * Created by youssef on 05/03/2016.
@@ -27,6 +30,7 @@ public class DBContent {
     private String actualUserId_=new String();
     // seul attribut commun permettant de verifier la reponse a la requette http a l'interieur d'un thread
     private boolean flagForResponses = false;
+    private String responseStr = new String();
 
     // instance du singleton
     private static DBContent instance_ = null;
@@ -49,6 +53,46 @@ public class DBContent {
         instance_=null;
     }
 
+    public void addPreference(String priorite, String adresse)
+    {
+        Preference preference = new Preference(adresse,priorite,actualUserId_);
+        userMap_.get(actualUserId_).addPreferences(preference);
+
+    }
+
+    // echanger les priorite de deux preferences
+    public void switchUserPreferences(int x,int y)
+    {
+        userMap_.get(actualUserId_).switchPreferencesPriorities(x, y);
+    }
+
+    // cree une nouvelle rencontre dans le groupe actuel par l'utilisateur actuel avec les infos en paramettre
+    public boolean creerRencontre(String lieu, String description, String date)
+    {
+        return groupsMap_.get(actualGroupId_).setRencontre(new Rencontre(lieu,description,actualUserId_,actualGroupId_,date));
+    }
+
+    // dans le cas ou il n'est pas creer il instancie un nouveau et offre la possibilite de le modifier
+    // si deja creer peut etre recuperer pour modifier ses attrinuts et infos necessaires
+    public Rencontre recupererRencontre()
+    {
+        if(groupsMap_.get(actualGroupId_).getRencontre()==null)
+        {
+            groupsMap_.get(actualGroupId_).setRencontre(new Rencontre());
+        }
+        return groupsMap_.get(actualGroupId_).getRencontre();
+    }
+    // recupere l'utilisateur actuel
+    public Utilisateur getActualUser()
+    {
+        return userMap_.get(actualUserId_);
+    }
+    // recupere le groupe actuel
+    public Groupe getActualGroup()
+    {
+        return groupsMap_.get(actualGroupId_);
+    }
+    // todo fonction a revoir si utile ou pas
     private void InitialSyncOfElements()
     {
         for (Map.Entry<String, Preference> preference : preferencesMap_.entrySet())
@@ -80,17 +124,287 @@ public class DBContent {
         }
 
     }
-
-
-    public  void GetUsersFromGroup(String idGroupe)
+    // creation d'utilisateur gere , retourn si added ou pas
+    public String CreerNouvelUtilisateur(final String UserName, final String email, final String password)
     {
+        responseStr=Constants.UserNotAdded;
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                // todo password enregistre localement est dangereux, voir solution alternative
+                Utilisateur NUtilisateur = new Utilisateur(UserName, email, password, actualGroupId_);
+                try {
+                    Log.d("CreerNouvelUtilisateur", "cest mon test a moi");
+                    // reponse true ou false du cote serveur
+                    String reponsePost = DBConnexion.postRequest("http://najibarbaoui.com/najib/insert_utilisateur.php", Parseur.ParseUserToJsonFormat(NUtilisateur));
+                    if(reponsePost.contentEquals("0"))
+                    {
+                        responseStr=Constants.UserAdded;
+                        userMap_.put(NUtilisateur.getId(),NUtilisateur);
+                        actualGroupId_=NUtilisateur.getId();
+                        actualGroupId_=NUtilisateur.getGroupeId();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }});
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return responseStr;
+
+    }
+
+    // authentification envoit une requette au serveur le serveur renvoit une reponse positive ou negative
+    // si positive, renvoit les infos de l<utilisateur sinon renvoit quelle est le probleme
+    public String authentification(final String courriel, final String password)
+    {;
+        responseStr=Constants.WrongEmail;
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Log.d("authentification", "c<est mon test a moi");
+                    String reponsePost= DBConnexion.postRequest("http://najibarbaoui.com/najib/ouvrirsession.php",Parseur.ParseAuthentificationInfoToJsonFormat(courriel, password));
+
+                    if(reponsePost.contentEquals("0"))
+                    {
+                        responseStr=Constants.WrongPassword;
+                    }
+                    else if(!reponsePost.contentEquals("1"))
+                    {
+                        responseStr=Constants.AccessGranted;
+                        Utilisateur utilisateurActuel;
+                        utilisateurActuel = Parseur.ParseJsonToUser(reponsePost);
+                        actualUserId_=utilisateurActuel.getId();
+                        actualGroupId_=utilisateurActuel.getGroupeId();
+                        userMap_.put(actualUserId_, utilisateurActuel);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return responseStr;
+    }
+
+    // fonction de mise a jour de la position de l'utilisateur actuel dans la BD
+    public void UpdateRemotePosition()
+    {
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("UpdatePosition", "c mon test a moi");
+                try {
+                    DBConnexion.postRequest("http://najibarbaoui.com/najib/update_position.php",
+                            Parseur.ParsePositionToJsonFormat(userMap_.get(actualUserId_).getPosition()));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // recuperation de tous les utilisateurs
+    public  void getAllUsers()
+    {
+        // le clear au cas ou la map contient deja klke chose
+        userMap_.clear();
         Thread UsersThread = new Thread(new Runnable() {
             public void run() {
                 Log.d("Users test", "c mon test a moi");
+                try{
+                    // TODO set the right url
+                    userMap_ = Parseur.ParseToUsersMap(DBConnexion.getRequest("http://najibarbaoui.com/najib/utilisateurs.php"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        UsersThread.start();
+        try {
+            UsersThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // recuperation d'un utilisateur selon son id
+    public Utilisateur getUserById(final String idUser)
+    {
+        if( userMap_.containsKey(idUser))
+        {
+            return userMap_.get(idUser);
+        }
+        else
+        {
+            final Utilisateur[] user = new Utilisateur[1];
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        user[0] = Parseur.ParseJsonToUser(DBConnexion.getRequest("http://najibarbaoui.com/najib/utilisateur.php?id_utilisateur="
+                        + URLEncoder.encode(idUser,"UTF-8")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return user[0];
+        }
+    }
+
+    // recuperation des informations d'un groupe a partir de l'id d'un utilisateur de ce groupe
+    public Groupe getGroupdInformationFromUserId(final String userId)
+    {
+        final Groupe[] groupe = new Groupe[1];
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String reponse = DBConnexion.getRequest("http://najibarbaoui.com/najib/groupebyidutilisateur.php?id_utilisateur="+
+                            URLEncoder.encode(userId,"UTF-8"));
+                    groupe[0] =Parseur.ParseJsonToGroup(reponse);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return groupe[0];
+    }
+    public  void getAllGroupsInformations()
+    {
+       // au cas ou
+        groupsMap_.clear();
+        Thread GroupsThread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("Groups test", "c mon test a moi");
                 DBConnexion con=new DBConnexion();
                 try{
                     // TODO set the right url
-                    userMap_ = Parseur.ParseToUsersMap(con.getRequest("http://najibarbaoui.com/najib"));
+                    groupsMap_ = Parseur.ParseToGroupeMap(con.getRequest("http://najibarbaoui.com/najib/groupe.php"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        GroupsThread.start();
+        try {
+            GroupsThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    // ajouter nouveau groupe
+    public String AddNewGroupToRemoteContent(String nom)
+    {
+        responseStr=Constants.GroupNotAdded;
+        final Groupe group = new Groupe(nom);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String reponse = DBConnexion.postRequest("http://najibarbaoui.com/najib/insert_groupe.php",
+                            Parseur.ParseGroupToJsonFormat(group));
+                    if(reponse.contentEquals("0"))
+                    {
+                        responseStr=Constants.GroupAdded;
+                        actualGroupId_=group.getId();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return responseStr;
+    }
+    // ajout des preferences a la db
+    public void addPreferencesToRemoteContent(final Utilisateur user)
+    {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String preferencesStr = Parseur.ParsePreferencesToJsonFormat(user);
+                    DBConnexion.postRequest("http://najibarbaoui.com/najib/insert_preferences.php",preferencesStr);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    // recuperation de la liste des utilisateurs selon l'id du groupe
+    public  void GetUsersFromGroup(final String idGroupe)
+    {
+        // le clear au cas ou
+        userMap_.clear();
+        Thread UsersThread = new Thread(new Runnable() {
+            public void run() {
+                Log.d("Users test", "c mon test a moi");
+                try{
+                    userMap_ = Parseur.ParseToUsersMap(DBConnexion.getRequest(" http://najibarbaoui.com/najib/utilisateurbygroupe.php?id_groupe="
+                    + URLEncoder.encode(idGroupe,"UTF-8")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -106,68 +420,7 @@ public class DBContent {
             e.printStackTrace();
         }
     }
-
-    public boolean CreerNouvelUtilisateur(final String UserName, final String email, final String password)
-    {
-        flagForResponses=false;
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                // todo password enregistre localement est dangereux, voir solution alternative
-                Utilisateur NUtilisateur = new Utilisateur(UserName, email, password, actualGroupId_);
-                try {
-                    // todo l<url a mettre et le format de la reponse pour verifier si loperatin est bien effectuer
-                    // reponse true ou false du cote serveur
-                    String reponsePost = DBConnexion.postRequest("URL", Parseur.ParseUserToJsonFormat(NUtilisateur));
-                    // todo verifier le format de la reponse pour savoir si les changement ont bien ete effectue
-                    if(reponsePost.contentEquals(""))
-                    {
-                        flagForResponses=true;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }});
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return flagForResponses;
-
-    }
-    public boolean authentification(final String username, final String password)
-    {;
-        flagForResponses=false;
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    //todo right url
-                    String reponsePost= DBConnexion.postRequest("url",Parseur.ParseAuthentificationInfoToJsonFormat(username, password));
-                   // todo response format true or false
-                    if(reponsePost.contentEquals(""))
-                    {
-                        flagForResponses=true;
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } });
-        thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return flagForResponses;
-    }
-
-    void mettreAjourPositionsMembresDuGroupe()
+    public void mettreAjourPositionsMembresDuGroupe()
     {
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -207,30 +460,35 @@ public class DBContent {
             e.printStackTrace();
         }
     }
-    public  void getAllGroupsInformations()
+
+    public Rencontre recupererLaRencontreGroupeBD(final String idGroupe)
     {
-        Thread GroupsThread = new Thread(new Runnable() {
+        final Rencontre[] rencontre = new Rencontre[1];
+        Thread thread = new Thread(new Runnable() {
+            @Override
             public void run() {
-                Log.d("Groups test", "c mon test a moi");
-                DBConnexion con=new DBConnexion();
-                try{
-                    // TODO set the right url
-                    groupsMap_ = Parseur.ParseToGroupeMap(con.getRequest("http://najibarbaoui.com/najib"));
+                try {
+                    String reponse = DBConnexion.getRequest("http://najibarbaoui.com/najib/rencontrebygroupe.php?id_groupe="
+                    + URLEncoder.encode(idGroupe,"UTF-8"));
+                    rencontre[0] =Parseur.ParseJsonToRencontre(reponse);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
 
+            }
         });
-        GroupsThread.start();
+
+        thread.start();
         try {
-            GroupsThread.join();
+            thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return rencontre[0];
     }
+
     public void SynchronizeLocalPreferencesFromRemoteContent()
     {
         Thread PreferencesThread = new Thread(new Runnable() {

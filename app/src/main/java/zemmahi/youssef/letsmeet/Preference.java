@@ -1,34 +1,27 @@
 package zemmahi.youssef.letsmeet;
 
+import java.util.UUID;
+
 /**
  * Created by youssef on 24/02/2016.
  */
 public class Preference {
     private String id_=new String();
-    private String idLocarion_=new String();
+    private String adresse_ = new String();
     private String priority_=Constants.DefaultPriority;
     private String userId_=new String();
+    private UUID uidFormat_ = UUID.fromString("91c83b36-e25c-11e5-9730-9a79f06e9478");
 
     public Preference()
     {
-
+        id_=uidFormat_.randomUUID().toString();
     }
-    public Preference(String id, Position position)
+    public Preference(String adresse,String priority,String userId)
     {
-        idLocarion_=id;
-    }
-    public Preference(String id,String priority)
-    {
-        idLocarion_=id;
+        id_=uidFormat_.randomUUID().toString();
         priority_=priority;
-    }
-
-    public String getIdLocarion() {
-        return idLocarion_;
-    }
-
-    public void setIdLocation(String id) {
-        this.idLocarion_ = id;
+        adresse_=adresse;
+        userId_=userId;
     }
 
     public String getPriority() {
@@ -70,5 +63,12 @@ public class Preference {
 
     public void setUserId(String userId) {
         this.userId_ = userId;
+    }
+    public String getAdresse() {
+        return adresse_;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse_ = adresse;
     }
 }
