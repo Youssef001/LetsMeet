@@ -16,12 +16,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
 
 public class ChooseGroup extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Fragment fragment_ = null;
     private boolean viewIsAtHome_;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ public class ChooseGroup extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         displayView(R.id.nav_home);
+
+
     }
 
     @Override

@@ -54,12 +54,15 @@ public class EditProfile extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_edit_profile);
+        mEdTxtLastPassword = (EditText) findViewById(R.id.edtTxtAncienPasswordEP);
+        mEdTxtNewPassword = (EditText) findViewById(R.id.edtTxtNewPasswordEP);
+        mEdTxtComfirmNewPassword = (EditText) findViewById(R.id.edtTxtConfirmNewPasswordEP);
         viewImage=(ImageView)findViewById(R.id.imgVwProfileImgEP);
         btnUpdateProfile = (Button) findViewById(R.id.btnUpdateProfileEP);
         btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(EditProfile.this, "Profile updated!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(EditProfile.this, "Profile updated!", Toast.LENGTH_LONG).show();
                 attemptUpdateProfile();
             }
         });
@@ -99,7 +102,7 @@ public class EditProfile extends Activity {
         mEdTxtNewPassword.setError(null);
         mEdTxtComfirmNewPassword.setError(null);
 
-        // Store values at the time of the login attempt.
+        // Store values at the time of the edit profile attempt.
         fLastPassword = mEdTxtLastPassword.getText().toString();
         fNewPassword = mEdTxtNewPassword.getText().toString();
         fConfirmNewPass = mEdTxtComfirmNewPassword.getText().toString();
@@ -112,7 +115,7 @@ public class EditProfile extends Activity {
             fLastPassCaseEmpty = true;
         }
         // Check for a valid last password.
-        if (!isLastPasswordValid(fNewPassword)) {
+        if (!isLastPasswordValid(fLastPassword)) {
             mEdTxtNewPassword.setError(getString(R.string.error_invalid_password));
             focusView = mEdTxtNewPassword;
             cancel = true;
@@ -151,20 +154,24 @@ public class EditProfile extends Activity {
                 && !fLastPassInvalide && !fNewPassCaseEmpty) {
 
             /* Ici on met a jour les infos de l'utilisateur */
+            /*To do: Create getUtilisateurCourant() */
+            // Utilisateur utilisateurCourant = getUtilisateurCourant();
+            // utilisateurCourant.setPassword(fNewPassword);
+            // utilisateurCourant.setPhotoEnBitmap(bp);
 
 
-            if (cancel) {
-                // There was an error; don't attempt login and focus the first
-                // form field with an error.
-                focusView.requestFocus();
-            }
-//            else{
-//                Toast.makeText(getApplicationContext(),
-//                        "Update profile failed! try again, please!",
-//                        Toast.LENGTH_LONG).show();
-//                focusView.requestFocus();
-//            }
-
+            /* Après l'enregistrement  on revient  a choose group act */
+            Toast.makeText(getApplicationContext(),
+                    "Update profile successful!",
+                    Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getBaseContext(), ChooseGroup.class);
+            startActivity(i);
+            finish();
+        }
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
         }
 
     }

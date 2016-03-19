@@ -52,7 +52,7 @@
         android:layout_below="@+id/btnRencontresCG"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Rencontres"
+        android:text="Liste des utilisateurs"
         />
 
 </RelativeLayout>
