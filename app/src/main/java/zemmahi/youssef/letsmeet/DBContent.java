@@ -139,6 +139,7 @@ public class DBContent {
                     if(reponsePost.contentEquals("0"))
                     {
                         responseStr=Constants.UserAdded;
+                        userMap_.put(NUtilisateur.getId(),NUtilisateur);
                         actualGroupId_=NUtilisateur.getId();
                         actualGroupId_=NUtilisateur.getGroupeId();
                     }
