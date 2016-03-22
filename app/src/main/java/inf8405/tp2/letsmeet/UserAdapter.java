@@ -68,7 +68,7 @@ public class UserAdapter extends BaseAdapter {
         fV.imageView = (ImageView) view.findViewById(R.id.imgVwContactPic);
 
         final Utilisateur data = (Utilisateur) fData.get(position);
-        fV.title.setText(data.getName());
+
         fV.check.setChecked(data.getCheckedBox());
         fV.email.setText(data.getCourriel());
 
@@ -116,10 +116,10 @@ public class UserAdapter extends BaseAdapter {
             fData.addAll(fArrayList);
         } else {
             for (Utilisateur wp : fArrayList) {
-                if (wp.getName().toLowerCase(Locale.getDefault())
+              /*  if (wp.getName().toLowerCase(Locale.getDefault())
                         .contains(charText)) {
                     fData.add(wp);
-                }
+                }*/
             }
         }
         notifyDataSetChanged();

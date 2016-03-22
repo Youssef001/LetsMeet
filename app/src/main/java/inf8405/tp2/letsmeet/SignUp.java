@@ -308,7 +308,6 @@ public class SignUp extends AppCompatActivity {
 
             // Créer un nouveau utilisateur pour valider sign in
             Utilisateur utilisateur = new Utilisateur();
-            utilisateur.setName(fUserName);
             utilisateur.setCourriel(fEmail);
             utilisateur.setPassword(fPassword);
             utilisateur.setPhotoEnBitmap(fPhoto);

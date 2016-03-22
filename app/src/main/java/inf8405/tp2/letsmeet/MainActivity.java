@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //                }
 
                 DBContent dbContent = DBContent.getInstance();
-                String temp=dbContent.CreerNouvelUtilisateur("dadach","najib@yahoo.com","abjiNajib");
+                String temp=dbContent.CreerNouvelUtilisateur(new Utilisateur("mzolnouri@hawhaw.cat","ba333",dbContent.getActualGroupId()));
                 Log.d("helloooooo","temp");
             }
         });
@@ -330,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         protected Void doInBackground(Void... arg0) {
             // Créer un nouveau utilisateur pour valider sign in
             Utilisateur utilisateur = new Utilisateur();
-            utilisateur.setName(fUsername);
             utilisateur.setPassword(fPassword);
             /* Ici on vérifie la validité des informations entrées */
             fUserCheckedSuccessful = utilisateur.IsUserNameValide();
